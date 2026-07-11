@@ -2,33 +2,37 @@
 
 [ext_resource type="Shader" uid="uid://c086dnepaust5" path="res://Shaders/Sky/Sky.gdshader" id="1_bcvet"]
 [ext_resource type="PackedScene" uid="uid://nkrdmq7wvm8j" path="res://Scenes/Car/car.tscn" id="2_phvr8"]
-[ext_resource type="MeshLibrary" uid="uid://cve3h6hny1qqr" path="res://MeshLib.meshlib" id="3_bcvet"]
+[ext_resource type="MeshLibrary" uid="uid://cve3h6hny1qqr" path="res://Mesh libraries/MeshLib.meshlib" id="3_bcvet"]
+[ext_resource type="MeshLibrary" uid="uid://bqxnjgh6uglek" path="res://Mesh libraries/IndustrialMeshLib.meshlib" id="4_8nfsw"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_6i2pb"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vr403"]
 shader = ExtResource("1_bcvet")
-shader_parameter/power = 0.5
+shader_parameter/power = 75.215
 shader_parameter/scale = 0.5
-shader_parameter/speed = 0.1
-shader_parameter/density = 0.1
+shader_parameter/speed = 0.0
+shader_parameter/density = 0.0
 shader_parameter/sky_color_a = Color(0.5, 0.8, 1, 1)
 shader_parameter/sky_color_b = Color(0.3, 0.5, 1, 1)
-shader_parameter/ground_color_a = Color(1, 0.8, 0.5, 1)
-shader_parameter/ground_color_b = Color(1, 0.5, 0.3, 1)
+shader_parameter/ground_color_a = Color(0, 0.60784316, 0, 1)
+shader_parameter/ground_color_b = Color(0, 0, 0, 1)
 
-[sub_resource type="Sky" id="Sky_pc344"]
-sky_material = SubResource("ShaderMaterial_6i2pb")
+[sub_resource type="Sky" id="Sky_fo4t3"]
+sky_material = SubResource("ShaderMaterial_vr403")
 
-[sub_resource type="Environment" id="Environment_8nfsw"]
+[sub_resource type="Environment" id="Environment_ucvjy"]
 background_mode = 2
-sky = SubResource("Sky_pc344")
+sky = SubResource("Sky_fo4t3")
 glow_enabled = true
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_tsrje"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tsrje"]
+albedo_color = Color(0.16631824, 0.16631803, 0.16631812, 1)
+
 [node name="Track" type="Node3D" unique_id=781937724]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=174205461]
-environment = SubResource("Environment_8nfsw")
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=481053324]
+environment = SubResource("Environment_ucvjy")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1499101922]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
@@ -44,10 +48,45 @@ shape = SubResource("WorldBoundaryShape3D_tsrje")
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -19.543095, 8.173479, 45.38402)
 SUN = NodePath("../DirectionalLight3D")
 
-[node name="GridMap" type="GridMap" parent="." unique_id=1966368751]
+[node name="Road Map" type="GridMap" parent="." unique_id=1966368751]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5.05, 0)
 mesh_library = ExtResource("3_bcvet")
 cell_size = Vector3(8, 8, 8)
 cell_scale = 16.0
 data = {
 "cells": PackedInt32Array(65533, 8, 1048576, 65533, 10, 1048576, 65533, 12, 1048576, 65533, 14, 1048576, 65533, 16, 1441792, 65533, 18, 1441792, 65533, 20, 1441792, 65533, 22, 1441792, 65533, 24, 1441792, 65533, 26, 1441792, 65533, 28, 1441792, 65533, 30, 1441792, 65533, 32, 1441792, 65533, 34, 1441792, 65533, 36, 1441792, 65533, 38, 1441792, 65533, 40, 1441792, 65533, 42, 1441792, 65533, 44, 1441792, 65534, 47, 655361, 1, 48, 655360, 3, 48, 655360, 5, 48, 655360, 7, 48, 655360, 9, 48, 655360, 11, 48, 655360, 13, 48, 655360, 15, 48, 655360, 17, 48, 655360, 19, 48, 655360, 21, 48, 655360, 23, 48, 655360, 25, 48, 655360, 27, 48, 655360, 29, 48, 655360, 31, 48, 655360, 33, 48, 655360, 35, 48, 655360, 37, 48, 655360, 39, 48, 655360, 41, 48, 655360, 43, 48, 655360, 45, 48, 655360, 47, 48, 655360, 49, 48, 655360, 51, 48, 655360, 53, 48, 655360, 55, 48, 655360, 57, 48, 655360, 59, 48, 655360, 62, 47, 1441793, 63, 44, 1441792, 63, 42, 1441792, 63, 40, 1441792, 63, 38, 1441792, 63, 36, 1441792, 63, 34, 1441792, 63, 32, 1441792, 63, 30, 1441792, 63, 28, 1441792, 63, 26, 1441792, 63, 24, 1441792, 63, 22, 1441792, 63, 20, 1441792, 63, 18, 1441792, 63, 16, 1441792, 63, 14, 1441792, 63, 12, 1441792, 63, 10, 1441792, 63, 8, 1441792, 65534, 4, 1048577, 1, 3, 0, 3, 3, 0, 5, 3, 0, 7, 3, 0, 9, 3, 0, 11, 3, 0, 13, 3, 0, 15, 3, 0, 17, 3, 0, 19, 3, 0, 21, 3, 0, 23, 3, 0, 25, 3, 0, 27, 3, 0, 29, 3, 0, 31, 3, 0, 33, 3, 0, 35, 3, 0, 37, 3, 0, 39, 3, 0, 41, 3, 0, 43, 3, 0, 45, 3, 0, 47, 3, 0, 49, 3, 0, 51, 3, 0, 53, 3, 0, 55, 3, 0, 57, 3, 0, 59, 3, 0, 62, 4, 1, 63, 7, 1441792, 65533, 7, 1441792)
 }
+
+[node name="Industrial Map" type="GridMap" parent="." unique_id=753107152]
+visible = false
+mesh_library = ExtResource("4_8nfsw")
+cell_scale = 16.0
+data = {
+"cells": PackedInt32Array(65535, 32, 1048598, -1, 49, 1048599, -65535, 65, 1048597, -65536, 74, 1048596, -65536, 80, 1048596, -1, 87, 1048579, -65536, 97, 1048579, -3, 107, 1048594, -1, 127, 1048600, -3, 136, 1048593, -1, 153, 1048581, -65527, 186, 6, -65509, 186, 6, -65492, 186, 6, -65473, 186, 6, -65454, 186, 6, -65442, 187, 1, -65442, 185, 1, -65438, 185, 1, -65438, 187, 1, -1, 162, 0, -1, 165, 0, -1, 168, 0, -1, 171, 0, -1, 174, 0, -1, 177, 0, -1, 180, 0, -5, 163, 1441792, -5, 169, 1441792, -5, 175, 1441792, -5, 181, 1441792, -65422, 184, 655367, -65390, 183, 655367, -65369, 186, 655379, -65343, 188, 1441802, -65332, 185, 655369, -65358, 184, 655363, -65341, 185, 655361, -65314, 184, 655382)
+}
+metadata/_editor_floor_ = Vector3(0, -1, 0)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=699575671]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 275.319, -1.956, 194.26)
+use_collision = true
+size = Vector3(941.8679, 2.104004, 603.1405)
+material = SubResource("StandardMaterial3D_tsrje")
+
+[node name="ProtonScatter" type="Node3D" parent="." unique_id=1555872760]
+process_mode = false
+process_priority = false
+process_physics_priority = false
+process_thread_group = false
+physics_interpolation_mode = false
+auto_translate_mode = false
+editor_description = false
+transform = false
+rotation_edit_mode = false
+rotation_order = false
+visible = false
+visibility_parent = false
+script = false
+modifier_stack = null
+Performance/use_chunks = true
+Performance/chunk_dimensions = Vector3(15, 15, 15)
+metadata/_custom_type_script = false

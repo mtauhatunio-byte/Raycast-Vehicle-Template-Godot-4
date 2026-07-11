@@ -779,12 +779,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.60011184, -0.016871035, 0.
 emitting = false
 amount = 100
 
-[node name="Rays" type="Node3D" parent="F1/tmpParent/suv" unique_id=492282563]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3282895, 0)
-
-[node name="FL" type="RayCast3D" parent="F1/tmpParent/suv/Rays" unique_id=1637272812]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.11415154, 0.61513233)
-
 [node name="Ray" type="RayCast3D" parent="F1" unique_id=850070480]
 target_position = Vector3(0, -0.5, 0)
 
