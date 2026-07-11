@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://qymr48afk3m5"]
+
+[ext_resource type="AudioStream" uid="uid://j1tqalx7j4qo" path="res://Sound Effects/Noise/Ambient Noise.mp3" id="1_k7dph"]
+
+[node name="Noise" type="AudioStreamPlayer" unique_id=328740516]
+stream = ExtResource("1_k7dph")
+autoplay = true
+bus = &"Noise"
+parameters/looping = true

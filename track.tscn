@@ -1,0 +1,53 @@
+[gd_scene format=3 uid="uid://danyx5bfmirjn"]
+
+[ext_resource type="Shader" uid="uid://c086dnepaust5" path="res://Shaders/Sky/Sky.gdshader" id="1_bcvet"]
+[ext_resource type="PackedScene" uid="uid://nkrdmq7wvm8j" path="res://Scenes/Car/car.tscn" id="2_phvr8"]
+[ext_resource type="MeshLibrary" uid="uid://cve3h6hny1qqr" path="res://MeshLib.meshlib" id="3_bcvet"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6i2pb"]
+shader = ExtResource("1_bcvet")
+shader_parameter/power = 0.5
+shader_parameter/scale = 0.5
+shader_parameter/speed = 0.1
+shader_parameter/density = 0.1
+shader_parameter/sky_color_a = Color(0.5, 0.8, 1, 1)
+shader_parameter/sky_color_b = Color(0.3, 0.5, 1, 1)
+shader_parameter/ground_color_a = Color(1, 0.8, 0.5, 1)
+shader_parameter/ground_color_b = Color(1, 0.5, 0.3, 1)
+
+[sub_resource type="Sky" id="Sky_pc344"]
+sky_material = SubResource("ShaderMaterial_6i2pb")
+
+[sub_resource type="Environment" id="Environment_8nfsw"]
+background_mode = 2
+sky = SubResource("Sky_pc344")
+glow_enabled = true
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_tsrje"]
+
+[node name="Track" type="Node3D" unique_id=781937724]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=174205461]
+environment = SubResource("Environment_8nfsw")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1499101922]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=2072986287]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=709188854]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.064234555, 0)
+shape = SubResource("WorldBoundaryShape3D_tsrje")
+
+[node name="Car" parent="." unique_id=1074208897 node_paths=PackedStringArray("SUN") instance=ExtResource("2_phvr8")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -19.543095, 8.173479, 45.38402)
+SUN = NodePath("../DirectionalLight3D")
+
+[node name="GridMap" type="GridMap" parent="." unique_id=1966368751]
+mesh_library = ExtResource("3_bcvet")
+cell_size = Vector3(8, 8, 8)
+cell_scale = 16.0
+data = {
+"cells": PackedInt32Array(65533, 8, 1048576, 65533, 10, 1048576, 65533, 12, 1048576, 65533, 14, 1048576, 65533, 16, 1441792, 65533, 18, 1441792, 65533, 20, 1441792, 65533, 22, 1441792, 65533, 24, 1441792, 65533, 26, 1441792, 65533, 28, 1441792, 65533, 30, 1441792, 65533, 32, 1441792, 65533, 34, 1441792, 65533, 36, 1441792, 65533, 38, 1441792, 65533, 40, 1441792, 65533, 42, 1441792, 65533, 44, 1441792, 65534, 47, 655361, 1, 48, 655360, 3, 48, 655360, 5, 48, 655360, 7, 48, 655360, 9, 48, 655360, 11, 48, 655360, 13, 48, 655360, 15, 48, 655360, 17, 48, 655360, 19, 48, 655360, 21, 48, 655360, 23, 48, 655360, 25, 48, 655360, 27, 48, 655360, 29, 48, 655360, 31, 48, 655360, 33, 48, 655360, 35, 48, 655360, 37, 48, 655360, 39, 48, 655360, 41, 48, 655360, 43, 48, 655360, 45, 48, 655360, 47, 48, 655360, 49, 48, 655360, 51, 48, 655360, 53, 48, 655360, 55, 48, 655360, 57, 48, 655360, 59, 48, 655360, 62, 47, 1441793, 63, 44, 1441792, 63, 42, 1441792, 63, 40, 1441792, 63, 38, 1441792, 63, 36, 1441792, 63, 34, 1441792, 63, 32, 1441792, 63, 30, 1441792, 63, 28, 1441792, 63, 26, 1441792, 63, 24, 1441792, 63, 22, 1441792, 63, 20, 1441792, 63, 18, 1441792, 63, 16, 1441792, 63, 14, 1441792, 63, 12, 1441792, 63, 10, 1441792, 63, 8, 1441792, 65534, 4, 1048577, 1, 3, 0, 3, 3, 0, 5, 3, 0, 7, 3, 0, 9, 3, 0, 11, 3, 0, 13, 3, 0, 15, 3, 0, 17, 3, 0, 19, 3, 0, 21, 3, 0, 23, 3, 0, 25, 3, 0, 27, 3, 0, 29, 3, 0, 31, 3, 0, 33, 3, 0, 35, 3, 0, 37, 3, 0, 39, 3, 0, 41, 3, 0, 43, 3, 0, 45, 3, 0, 47, 3, 0, 49, 3, 0, 51, 3, 0, 53, 3, 0, 55, 3, 0, 57, 3, 0, 59, 3, 0, 62, 4, 1, 63, 7, 1441792, 65533, 7, 1441792)
+}

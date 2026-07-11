@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dkqt3np0hkubp"]
+
+[ext_resource type="Texture2D" uid="uid://mtfbax0pl5u1" path="res://Models/Roads/Textures/colormap.png" id="1_xxfam"]
+
+[resource]
+albedo_texture = ExtResource("1_xxfam")

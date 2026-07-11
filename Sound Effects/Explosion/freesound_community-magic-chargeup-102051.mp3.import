@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bpbpilag2eovd"
+path="res://.godot/imported/freesound_community-magic-chargeup-102051.mp3-65f0cd9420ff6da3063697c706c85bb6.mp3str"
+
+[deps]
+
+source_file="res://Sound Effects/Explosion/freesound_community-magic-chargeup-102051.mp3"
+dest_files=["res://.godot/imported/freesound_community-magic-chargeup-102051.mp3-65f0cd9420ff6da3063697c706c85bb6.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
