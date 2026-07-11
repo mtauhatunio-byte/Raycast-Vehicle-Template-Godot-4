@@ -536,6 +536,9 @@ shader_parameter/samples = 12
 
 [node name="Car" type="Node3D" unique_id=1074208897 node_paths=PackedStringArray("ball", "car_mesh", "body_mesh", "ground_ray", "right_wheel", "left_wheel", "wheel_back_right", "wheel_back_left", "wheels", "left", "right", "engine_moving", "tire_screech", "label", "speed_lines_rect", "blur_rect", "camera", "explosion")]
 script = ExtResource("1_mshqt")
+steering = 30.0
+max_engine_force = 100.0
+engine_acceleration = 10.0
 ball = NodePath("ball")
 car_mesh = NodePath("F1/tmpParent/suv")
 body_mesh = NodePath("F1/tmpParent/suv/body")
