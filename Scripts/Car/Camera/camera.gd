@@ -34,8 +34,10 @@ func _ready():
 	camera_forward = -car_mesh.global_basis.z
 	current_camera = self
 
+
 func get_speed() -> float:
 	return ball.linear_velocity.length()
+
 
 func get_ratio() -> float:
 	
@@ -45,11 +47,13 @@ func get_ratio() -> float:
 	
 	return speed_ratio
 
+
 func get_forward() -> Vector3:
 	
 	var desired_forward := -car_mesh.global_basis.z
 	
 	return desired_forward
+
 
 func fov_calc(delta: float) -> void:
 	# =========================
@@ -64,6 +68,7 @@ func fov_calc(delta: float) -> void:
 		max_fov,
 		speed_ratio * delta
 	)
+
 
 func camera_direction(delta: float) -> void:
 	# =========================
@@ -92,32 +97,31 @@ func camera_direction(delta: float) -> void:
 		reverse_amount
 	).normalized()
 
+
 func velocity(delta: float) -> void:
-			
 	var speed: float = get_speed()
 	
 	var desired_forward := get_forward().lerp(
-	car_mesh.global_basis.z,
-	reverse_amount
+		car_mesh.global_basis.z,
+		reverse_amount
 	).normalized()
 	
-	# Still blend a little toward velocity for drifting
 	if speed > 1.0:
-
 		var velocity_dir := -ball.linear_velocity.normalized()
-
-
-
-		
 		desired_forward = desired_forward.lerp(
 			velocity_dir,
 			side_view_strength * delta
 		).normalized()
 
+	# FIX: Force camera_forward to be perfectly 1.0 right before slerp
+	camera_forward = camera_forward.normalized()
+	desired_forward = desired_forward.normalized()
+
 	camera_forward = camera_forward.slerp(
 		desired_forward,
-		camera_turn_speed * delta
+		clamp(camera_turn_speed * delta, 0.0, 1.0)
 	).normalized()
+
 
 func positioning(delta: float) -> void:
 	
@@ -139,6 +143,7 @@ func positioning(delta: float) -> void:
 		desired_position,
 		follow_speed * delta
 	)
+
 
 func look_ahead(delta: float) -> void:
 	# =========================
@@ -171,6 +176,7 @@ func look_ahead(delta: float) -> void:
 		10.0 * delta
 	).orthonormalized()
 
+
 func _process(delta: float):
 
 	if ball == null or car_mesh == null:
@@ -187,6 +193,7 @@ func _process(delta: float):
 	look_ahead(delta)
 	
 	apply_screen_shake()
+
 
 func apply_screen_shake() -> void:
 	var strength = ScreenShake.shake_strength
