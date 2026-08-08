@@ -1,4 +1,4 @@
-class_name PlayerCamera3D extends Camera3D
+@icon("uid://dsftwifgicywo") class_name PlayerCamera3D extends Camera3D
 
 @export var car_mesh: MeshInstance3D 
 @export var ball: RigidBody3D 
@@ -14,7 +14,7 @@ class_name PlayerCamera3D extends Camera3D
 
 @export var look_height := 1.2
 
-@export var look_follow_strength := 1.0
+@export var look_follow_strength := -0.15
 
 # Camera rotation lag
 @export var camera_turn_speed := 3.0
@@ -25,6 +25,8 @@ class_name PlayerCamera3D extends Camera3D
 var camera_forward := Vector3.FORWARD
 
 @export var reverse_camera_speed := 5.0
+
+@export var drift_tilt: float = 4.0
 
 var reverse_amount := 0.0
 
@@ -57,17 +59,17 @@ func get_forward() -> Vector3:
 
 func fov_calc(delta: float) -> void:
 	# =========================
-	# Dynamic FOV
+	# Dynamic FOV (Fixed Frame-Rate Dependency)
 	# =========================
-	
 	var speed_ratio: float = get_ratio()
 
+	# 1. First, find out exactly what the IDEAL target FOV should be right now based on speed
+	var target_fov = lerp(base_fov, max_fov, speed_ratio)
+	
+	# 2. Then, use delta smoothly over time to slide the camera's current FOV toward that target.
+	# A speed factor of 5.0 makes the camera lens smoothly stretch out as you accelerate!
+	fov = lerp(fov, target_fov, 5.0 * delta)
 
-	fov = lerp(
-		base_fov,
-		max_fov,
-		speed_ratio * delta
-	)
 
 
 func camera_direction(delta: float) -> void:
@@ -121,6 +123,18 @@ func velocity(delta: float) -> void:
 		desired_forward,
 		clamp(camera_turn_speed * delta, 0.0, 1.0)
 	).normalized()
+	
+		# --- CAMERA DRIFT SWAY TILT ---
+	# Find out how fast the car is sliding sideways
+	var current_right_vector = car_mesh.global_basis.x
+	var slide_speed = current_right_vector.dot(ball.linear_velocity)
+	
+	# Turn that sliding speed into a lens tilt angle (max 4 degrees)
+	var target_camera_roll = clamp(-slide_speed * 0.05, deg_to_rad(-drift_tilt), deg_to_rad(+drift_tilt))
+	
+	# Smoothly tilt the camera lens into the drift arc
+	global_transform.basis = global_transform.basis.rotated(global_transform.basis.z, target_camera_roll * delta * 5.0)
+
 
 
 func positioning(delta: float) -> void:
