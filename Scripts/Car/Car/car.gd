@@ -1,4 +1,4 @@
-class_name PlayerCar3D extends Node3D
+@icon("uid://b0y7qj2gr3yyl") class_name PlayerCar3D extends Node3D
 
 #region # @export variables
 
@@ -18,8 +18,6 @@ class_name PlayerCar3D extends Node3D
 @export var engine_braking := 70.0
 @export var brake_strength: float = 3
 
-var engine_force := 0.0
-
 @export_group("Drifting (Useless)")
 @export var grip := 8.0
 @export var drift_grip := 2.0
@@ -34,10 +32,7 @@ var engine_force := 0.0
 @export_group("Suspension")
 @export var compression_multiplier: float = 0.8
 @export var compression_speed: float = 14.0
-
-var speed_input: float = 0
-var rotate_input: float  = 0
-var suspension_velocity: float = 0.0
+@export var spring_bounciness: float = 0.6
 
 @export_group("Nodes")
 
@@ -55,6 +50,12 @@ var suspension_velocity: float = 0.0
 @export var wheel_back_right: MeshInstance3D
 @export var wheel_back_left: MeshInstance3D
 @export var wheels: Node3D
+
+@export_subgroup("Raycasts")
+@export var fl: RayCast3D
+@export var fr: RayCast3D
+@export var bl: RayCast3D
+@export var br: RayCast3D
 
 @export_subgroup("Smoke")
 
@@ -81,19 +82,40 @@ var suspension_velocity: float = 0.0
 @export_subgroup("Explosion")
 @export var explosion: Node3D
 
+@export_subgroup("Sun")
+@export var SUN: DirectionalLight3D
+
 #endregion
 
+
+#region # @onready variables
 @onready var fps: Label = $"UI Layers/CanvasLayer/FPS"
 
 @onready var noise_bus: int = AudioServer.get_bus_index("Noise")
 
+#endregion
+
+
+#region # Changing Variables
+
 enum MODES {FORWARD = 1, BACKWARD = -1, NULL = 0, DEAD = 2}
 var mode: MODES = MODES.FORWARD
 
+var speed_input: float = 0
+var rotate_input: float  = 0
+var visual_spring_velocity: float = 0.0
+var engine_force := 0.0
+
+#endregion
+
+
+#region # Static Variables
+
 static var car: PlayerCar3D = null
 
-@export_subgroup("Sun")
-@export var SUN: DirectionalLight3D
+#endregion
+
+
 
 
 func _ready() -> void:
@@ -119,6 +141,8 @@ func _process(delta: float) -> void:
 	alignment(delta)
 	
 	car_position_update(delta)
+	
+	suspension(delta)
 
 	if not ground_ray.is_colliding(): 
 		#left.emitting = false
@@ -133,6 +157,25 @@ func _process(delta: float) -> void:
 	engine_pitch(delta)
 	
 	shader()
+
+
+func _physics_process(delta: float) -> void:
+	if mode == MODES.DEAD: return
+
+	# --- THE WALL-JAM ANTI-BOOST PROTECTION ---
+	# If the sphere's actual velocity is basically 0, but your engine force is high,
+	# it means you are stuck against a wall. We reset engine_force to 0 so it can't store speed.
+	if ball.linear_velocity.length() < 3.0 and abs(engine_force) > 10.0:
+		engine_force = 0.0
+		ball.angular_velocity = Vector3.ZERO # Wipe out the spinning energy immediately
+
+	# Apply the safe driving force forward
+	ball.apply_central_force(car_mesh.global_transform.basis.z * engine_force)
+
+	# Keep the engine audio source pinned to the car mesh
+	engine_moving.global_position = car_mesh.global_position
+	
+	input(delta)
 
 
 func speed_update() -> void:
@@ -157,13 +200,11 @@ func alignment(delta: float) -> void:
 func engine_pitch(delta: float) -> void:
 	# Keep engine playing whenever the game is active
 	
-	var current_speed: float = get_current_speed()
-	
 	if not engine_moving.playing:
 		engine_moving.play()
 		
 	# Calculate speed percentage (0.0 to 1.0) using the true corrected speed
-	var speed_ratio: float = clamp(current_speed / max_expected_speed, 0.0, 1.0)
+	var speed_ratio: float = get_speed_ratio()
 	
 	# Dynamically shift pitch up as the vehicle accelerates
 	engine_moving.pitch_scale = lerp(min_pitch, max_pitch, speed_ratio)
@@ -175,10 +216,8 @@ func engine_pitch(delta: float) -> void:
 
 func noise_scale(delta: float) -> void:
 	
-	var current_speed: float = get_current_speed()
-	
 	# Calculate speed percentage (0.0 to 1.0)
-	var speed_ratio: float = clamp(current_speed / max_expected_speed, 0.0, 1.0)
+	var speed_ratio: float = get_speed_ratio()
 	
 	# Get the current volume of the bus to smooth the transition
 	var current_bus_db: float = AudioServer.get_bus_volume_db(noise_bus)
@@ -195,10 +234,8 @@ func noise_scale(delta: float) -> void:
 
 
 func shader() -> void:
-	
-	var current_speed: float = get_current_speed()
 	# Calculate speed percentage (0.0 to 1.0) using the true corrected speed
-	var speed_ratio: float = clamp(current_speed / max_expected_speed, 0.0, 1.0)
+	var speed_ratio: float = get_speed_ratio()
 
 	# --- SEND DATA TO NOISE SHADER FROM GDSCRIPT ---
 	if speed_lines_rect and speed_lines_rect.material:
@@ -221,7 +258,7 @@ func shader() -> void:
 		var target_blur = remap(speed_ratio, 0.0, 1.0, 0.0, 0.4)
 		
 		# Set a hard performance limit at 24 samples directly from code
-		blur_rect.material.set_shader_parameter("samples", 24)
+		blur_rect.material.set_shader_parameter("samples", 12)
 		
 		# Push the values to the shader parameters
 		blur_rect.material.set_shader_parameter("blur_strength", target_blur)
@@ -309,72 +346,102 @@ func body_tilting(delta: float) -> void:
 		var max_tilt_angle: float = deg_to_rad(25.0)
 		t = clamp(t, -max_tilt_angle, max_tilt_angle)
 		
+		# --- DRIFT BODY ROLL ENHANCEMENT ---
+		# Check if the player is actively drifting/turning hard
+		if abs(rotate_input) > 0.3:
+			# Extra lean outward from the turn during a drift to show intense weight shift!
+			t += rotate_input * deg_to_rad(6.0)
+			
 		body_mesh.rotation.z = lerp(body_mesh.rotation.z, t, 10 * delta)
 
 
+
 func car_position_update(delta: float) -> void:
-	# 1. Standard horizontal alignment to the sphere
+	# 1. LOCAL HORIZONTAL POSITION MATCH (NO LAG)
+	# This locks your F1 mesh container perfectly to the center of the ball in local space.
+	# Because we leave .y out of it, the local Y is completely open for our spring force loop!
 	car_mesh.transform.origin.x = ball.transform.origin.x + sphere_offset.x
 	car_mesh.transform.origin.z = ball.transform.origin.z + sphere_offset.z
+
+
+func suspension(delta: float) -> void:
+	var total_height: float = 0.0
+	var ground_sensors_count: int = 0
+	var ideal_ride_distance: float = 1.0
 	
-	# Default riding target height
-	var target_y: float = ball.transform.origin.y + sphere_offset.y
-	var landing_slam: float = 0.0
-	
-	if ground_ray.is_colliding():
-		var point: Vector3 = ground_ray.get_collision_point()
-		var distance: float = ball.global_position.distance_to(point)
-		var ideal_dist: float = 1.0 # Your sphere's true radius
-		
-		var compression: float = ideal_dist - distance
-		landing_slam = compression
-		
-		# --- IMPACT SUSPENSION VELOCITY ---
-		if ball.linear_velocity.y < -1.0:
-			var impact_force = abs(ball.linear_velocity.y) * 0.12
-			suspension_velocity = clamp(impact_force, 0.0, 0.4)
+	var sensors: Array[RayCast3D] = [fl, fr, bl, br]
+	for sensor: RayCast3D in sensors:
+		if sensor and sensor.is_colliding():
+			ground_sensors_count += 1
+			var hit_dist: float = ball.global_transform.origin.distance_to(sensor.get_collision_point())
+			total_height += hit_dist
 			
-		# Push target_y down cleanly based on impact
-		target_y -= suspension_velocity
-		
-		# Decay the spring compression back to zero
-		suspension_velocity = move_toward(suspension_velocity, 0.0, 8.0 * delta)
-		
-		# Add standard terrain bump calculation
-		target_y += compression * 2.0
-	else:
-		# Airborne: Let the car droop down slightly while flying
-		target_y -= 0.20
-		suspension_velocity = 0.0
-		
-	# --- ANTI-CLIP SAFETY SNAP ---
-	# Calculate the exact distance between the mesh's current Y and the physics sphere's Y
-	var vertical_lag = abs(car_mesh.transform.origin.y - target_y)
+	var target_y = ball.global_transform.origin.y + sphere_offset.y
 	
-	# If the mesh is lagging behind by more than 1.5 meters (usually during a huge sky fall landing),
-	# we forcefully change the lerp speed to 100.0 to make it snap instantly and stop clipping!
-	var current_lerp_speed = compression_speed
-	if vertical_lag > 1.5 and ground_ray.is_colliding():
-		current_lerp_speed = 100.0
+	if ground_sensors_count > 0:
+		var avg_ground_dist: float = total_height / ground_sensors_count
+		var compression: float = ideal_ride_distance - avg_ground_dist
 		
-	# Smoothly animate the chassis position using our dynamic speed
-	car_mesh.transform.origin.y = lerp(car_mesh.transform.origin.y, target_y, current_lerp_speed * delta)
+		if ball.linear_velocity.y < -1.0:
+			var imp_force: float = absf(ball.linear_velocity.y) * 0.15
+			
+			target_y -= clampf(imp_force, 0.0, 0.4)
+			
+		target_y += compression * compression_multiplier
+		
+	else:
+		target_y -= 0.25
+		
+	# --- ARCADE CONSTRAINED SPRING SIMULATION ---
+	var current_mesh_y = car_mesh.global_transform.origin.y
+	var displacement = target_y - current_mesh_y
+	
+	# 1. HOOKE'S LAW STIFFNESS
+	# We multiply compression_speed to get a fast, snappy reaction force
+	var stiffness = compression_speed * 12.0
+	var spring_force = displacement * stiffness
+	
+	# 2. CRITICAL SPRING DAMPING (The Golden Bounce Fix)
+	# This formula calculates the exact amount of friction needed to let the car
+	# bounce precisely ONCE on heavy impacts and then stop completely.
+	# Change '0.5' to '0.3' for more bounce, or '0.7' for a heavier, stiffer thud!
+	var damping_ratio = 0.55 
+	var damping_force = 2.0 * sqrt(stiffness) * damping_ratio * visual_spring_velocity
+	
+	# 3. APPLY FORCES
+	visual_spring_velocity += (spring_force - damping_force) * delta
+	car_mesh.global_transform.origin.y += visual_spring_velocity * delta
+	
+	# --- 4. THE ABSOLUTE FLOOR SHIELD ---
+	# Hard ceiling constraint to completely stop the mesh from sinking past the tire treads
+	var absolute_floor_limit = ball.global_transform.origin.y + sphere_offset.y - 0.35
+	if car_mesh.global_transform.origin.y < absolute_floor_limit:
+		car_mesh.global_transform.origin.y = absolute_floor_limit
+		
+		# If we hit the absolute floor limit, we store a tiny bit of upward rebound velocity
+		# This forces a highly responsive, snappy visual bounce right off the pavement!
+		visual_spring_velocity = abs(visual_spring_velocity) * 0.4
 
-	# --- WHEELS SYNC (USING YOUR SPECIFIC 0.224 HEIGHT) ---
-	var default_wheel_y: float = 0.224 
 
-	# Body roll tilt offset when steering hard
+	# --- 4. INDEPENDENT WHEELS (SYNCED RELATIVE TO MOVING CHASSIS) ---
+	# We set our baseline height to 0.224 to match your exact Blender wheel offsets.
+	var default_wheel_y: float = -0.1
+	
+	# Weight transfer body roll: wheels tilt up/down slightly when steering hard
 	var tilt_offset: float = 0.0
 	if abs(rotate_input) > 0.05:
-		tilt_offset = rotate_input * 0.08 
-
-	# Wheels push UP into the wheel wells during heavy impacts
+		tilt_offset = rotate_input * 0.06 
+		
+		# Wheels push UP into the wheel wells during heavy impacts or land slams
 	var tire_compress: float = 0.0
-	if landing_slam > 0.03 or suspension_velocity > 0.02:
-		tire_compress = (landing_slam * 0.4) + (suspension_velocity * 0.8)
-		tire_compress = clamp(tire_compress, 0.0, 0.35)
-
-	# Final target positions relative to the body
+	var current_compression = ideal_ride_distance - (total_height / max(1, ground_sensors_count))
+	
+	if current_compression > 0.03 or ball.linear_velocity.y < -1.0:
+		tire_compress = (max(0.0, current_compression) * 0.4) + (abs(ball.linear_velocity.y) * 0.05)
+		# Clamp it to ensure tyres don't glitch through your car's fender models
+		tire_compress = clamp(tire_compress, 0.0, 0.25)
+		
+	# Final target positions relative to the moving body container
 	var target_left_y = default_wheel_y + tilt_offset + tire_compress
 	var target_right_y = default_wheel_y - tilt_offset + tire_compress
 
@@ -384,26 +451,6 @@ func car_position_update(delta: float) -> void:
 	right_wheel.transform.origin.y = lerp(right_wheel.transform.origin.y, target_right_y, 16.0 * delta)
 	wheel_back_right.transform.origin.y = lerp(wheel_back_right.transform.origin.y, target_right_y, 16.0 * delta)
 
-
-
-
-func _physics_process(delta: float) -> void:
-	if mode == MODES.DEAD: return
-
-	# --- THE WALL-JAM ANTI-BOOST PROTECTION ---
-	# If the sphere's actual velocity is basically 0, but your engine force is high,
-	# it means you are stuck against a wall. We reset engine_force to 0 so it can't store speed.
-	if ball.linear_velocity.length() < 3.0 and abs(engine_force) > 10.0:
-		engine_force = 0.0
-		ball.angular_velocity = Vector3.ZERO # Wipe out the spinning energy immediately
-
-	# Apply the safe driving force forward
-	ball.apply_central_force(car_mesh.global_transform.basis.z * engine_force)
-
-	# Keep the engine audio source pinned to the car mesh
-	engine_moving.global_position = car_mesh.global_position
-	
-	input(delta)
 
 
 func align_with_y(xform: Transform3D, new_y: Vector3) -> Transform3D:
@@ -431,12 +478,16 @@ func _input(event: InputEvent) -> void:
 						SUN.shadow_enabled = false
 
 
-
 func get_current_speed() -> float:
 	
 	var damping = max(0.001, 1.0 - get_physics_process_delta_time() * ball.linear_damp)
 
 	return ball.linear_velocity.length() / damping
+
+
+func get_speed_ratio() -> float:
+	var ratio: float = clamp(get_current_speed() / max_expected_speed, 0.0, 1.0)
+	return ratio
 
 
 func explode() -> void:
