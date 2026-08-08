@@ -2,8 +2,8 @@
 
 [ext_resource type="Shader" uid="uid://c086dnepaust5" path="res://Shaders/Sky/Sky.gdshader" id="1_v7cj3"]
 [ext_resource type="Material" uid="uid://dkqt3np0hkubp" path="res://Models/Roads/Textures/Road Texture.tres" id="3_83r8m"]
-[ext_resource type="PackedScene" uid="uid://nkrdmq7wvm8j" path="res://Scenes/Car/car.tscn" id="3_v7cj3"]
 [ext_resource type="ArrayOccluder3D" uid="uid://djxkfofajilep" path="res://Optmizations/Occlusion Culling/Test Scene/test.occ" id="5_fpuyy"]
+[ext_resource type="PackedScene" uid="uid://nkrdmq7wvm8j" path="res://Scenes/Car/car.tscn" id="5_l8y5p"]
 [ext_resource type="LightmapGIData" uid="uid://dola3lofywe0" path="res://Optmizations/Baked Lighting/Test Scene/test.lmbake" id="5_vfjqq"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_v7cj3"]
@@ -792,6 +792,7 @@ occluder = ExtResource("5_fpuyy")
 shape = SubResource("WorldBoundaryShape3D_tsrje")
 
 [node name="LightmapGI" type="LightmapGI" parent="." unique_id=2102104569]
+visible = false
 quality = 0
 supersampling_factor = 1.0
 bounces = 1
@@ -800,4 +801,4 @@ use_denoiser = false
 max_texture_size = 2048
 light_data = ExtResource("5_vfjqq")
 
-[node name="Car" parent="." unique_id=1074208897 instance=ExtResource("3_v7cj3")]
+[node name="Car" parent="." unique_id=1074208897 instance=ExtResource("5_l8y5p")]

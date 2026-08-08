@@ -31,8 +31,13 @@ var engine_force := 0.0
 @export var max_pitch: float = 2.0        # High engine scream at top speed
 @export var max_expected_speed: float = 50.0 # Match this to your car's top speed
 
+@export_group("Suspension")
+@export var compression_multiplier: float = 0.8
+@export var compression_speed: float = 14.0
+
 var speed_input: float = 0
 var rotate_input: float  = 0
+var suspension_velocity: float = 0.0
 
 @export_group("Nodes")
 
@@ -59,7 +64,6 @@ var rotate_input: float  = 0
 @export_subgroup("Sound Effects")
 
 @export var engine_moving: AudioStreamPlayer3D
-# OPTIONAL: If you add a tire screech AudioStreamPlayer3D inside your Sound Effects folder:
 @export var tire_screech: AudioStreamPlayer3D
 
 @export_subgroup("Labels")
@@ -98,6 +102,8 @@ func _ready() -> void:
 	car = self
 	explosion.hide()
 	wheels.show()
+	left.show()
+	right.show()
 
 
 func _process(delta: float) -> void:
@@ -119,8 +125,6 @@ func _process(delta: float) -> void:
 		#right.emitting = false
 		tire_screech.stop()
 		return
-	
-	input(delta)
 
 	drifting()
 
@@ -137,9 +141,9 @@ func speed_update() -> void:
 
 
 func ray_update() -> void:
-	ground_ray.force_raycast_update()
 	ground_ray.global_position = ball.global_position
 	ground_ray.target_position = Vector3.DOWN * 2.0
+	ground_ray.force_raycast_update()
 
 
 func alignment(delta: float) -> void:
@@ -309,13 +313,78 @@ func body_tilting(delta: float) -> void:
 
 
 func car_position_update(delta: float) -> void:
+	# 1. Standard horizontal alignment to the sphere
 	car_mesh.transform.origin.x = ball.transform.origin.x + sphere_offset.x
 	car_mesh.transform.origin.z = ball.transform.origin.z + sphere_offset.z
-	car_mesh.transform.origin.y = lerp(
-		car_mesh.transform.origin.y,
-		ball.transform.origin.y + sphere_offset.y,
-		10.0 * delta
-	)
+	
+	# Default riding target height
+	var target_y: float = ball.transform.origin.y + sphere_offset.y
+	var landing_slam: float = 0.0
+	
+	if ground_ray.is_colliding():
+		var point: Vector3 = ground_ray.get_collision_point()
+		var distance: float = ball.global_position.distance_to(point)
+		var ideal_dist: float = 1.0 # Your sphere's true radius
+		
+		var compression: float = ideal_dist - distance
+		landing_slam = compression
+		
+		# --- IMPACT SUSPENSION VELOCITY ---
+		if ball.linear_velocity.y < -1.0:
+			var impact_force = abs(ball.linear_velocity.y) * 0.12
+			suspension_velocity = clamp(impact_force, 0.0, 0.4)
+			
+		# Push target_y down cleanly based on impact
+		target_y -= suspension_velocity
+		
+		# Decay the spring compression back to zero
+		suspension_velocity = move_toward(suspension_velocity, 0.0, 8.0 * delta)
+		
+		# Add standard terrain bump calculation
+		target_y += compression * 2.0
+	else:
+		# Airborne: Let the car droop down slightly while flying
+		target_y -= 0.20
+		suspension_velocity = 0.0
+		
+	# --- ANTI-CLIP SAFETY SNAP ---
+	# Calculate the exact distance between the mesh's current Y and the physics sphere's Y
+	var vertical_lag = abs(car_mesh.transform.origin.y - target_y)
+	
+	# If the mesh is lagging behind by more than 1.5 meters (usually during a huge sky fall landing),
+	# we forcefully change the lerp speed to 100.0 to make it snap instantly and stop clipping!
+	var current_lerp_speed = compression_speed
+	if vertical_lag > 1.5 and ground_ray.is_colliding():
+		current_lerp_speed = 100.0
+		
+	# Smoothly animate the chassis position using our dynamic speed
+	car_mesh.transform.origin.y = lerp(car_mesh.transform.origin.y, target_y, current_lerp_speed * delta)
+
+	# --- WHEELS SYNC (USING YOUR SPECIFIC 0.224 HEIGHT) ---
+	var default_wheel_y: float = 0.224 
+
+	# Body roll tilt offset when steering hard
+	var tilt_offset: float = 0.0
+	if abs(rotate_input) > 0.05:
+		tilt_offset = rotate_input * 0.08 
+
+	# Wheels push UP into the wheel wells during heavy impacts
+	var tire_compress: float = 0.0
+	if landing_slam > 0.03 or suspension_velocity > 0.02:
+		tire_compress = (landing_slam * 0.4) + (suspension_velocity * 0.8)
+		tire_compress = clamp(tire_compress, 0.0, 0.35)
+
+	# Final target positions relative to the body
+	var target_left_y = default_wheel_y + tilt_offset + tire_compress
+	var target_right_y = default_wheel_y - tilt_offset + tire_compress
+
+	# Smoothly update local wheel heights
+	left_wheel.transform.origin.y = lerp(left_wheel.transform.origin.y, target_left_y, 16.0 * delta)
+	wheel_back_left.transform.origin.y = lerp(wheel_back_left.transform.origin.y, target_left_y, 16.0 * delta)
+	right_wheel.transform.origin.y = lerp(right_wheel.transform.origin.y, target_right_y, 16.0 * delta)
+	wheel_back_right.transform.origin.y = lerp(wheel_back_right.transform.origin.y, target_right_y, 16.0 * delta)
+
+
 
 
 func _physics_process(delta: float) -> void:
@@ -333,6 +402,8 @@ func _physics_process(delta: float) -> void:
 
 	# Keep the engine audio source pinned to the car mesh
 	engine_moving.global_position = car_mesh.global_position
+	
+	input(delta)
 
 
 func align_with_y(xform: Transform3D, new_y: Vector3) -> Transform3D:

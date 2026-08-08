@@ -511,13 +511,13 @@ noise = SubResource("FastNoiseLite_bqxbi")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_cnl4h"]
 shader = ExtResource("9_dufly")
-shader_parameter/car_speed_ratio = 1.0
+shader_parameter/car_speed_ratio = 0.0
 shader_parameter/noise = SubResource("NoiseTexture2D_1ynif")
 shader_parameter/line_color = Color(1, 1, 1, 1)
 shader_parameter/line_count = 2.0
-shader_parameter/line_density = 0.0
+shader_parameter/line_density = 0.5
 shader_parameter/line_faloff = 1.0
-shader_parameter/mask_size = 0.1
+shader_parameter/mask_size = 0.0
 shader_parameter/mask_edge = 0.5
 shader_parameter/animation_speed = 12.0
 
@@ -539,6 +539,7 @@ script = ExtResource("1_mshqt")
 steering = 30.0
 max_engine_force = 100.0
 engine_acceleration = 10.0
+compression_speed = 13.03
 ball = NodePath("ball")
 car_mesh = NodePath("F1/tmpParent/suv")
 body_mesh = NodePath("F1/tmpParent/suv/body")
@@ -767,6 +768,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_vibc5")
 
 [node name="Right" parent="F1/tmpParent/suv/Wheels/Back/wheel-back-right" unique_id=1031388700 instance=ExtResource("9_nk6bu")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.60011184, 0.016871035, -0.012124598)
+visible = false
 emitting = false
 amount = 100
 
@@ -779,13 +781,14 @@ surface_material_override/0 = SubResource("StandardMaterial3D_vibc5")
 
 [node name="Left" parent="F1/tmpParent/suv/Wheels/Back/wheel-back-left" unique_id=1475362635 instance=ExtResource("9_nk6bu")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.60011184, -0.016871035, 0.012124598)
+visible = false
 emitting = false
 amount = 100
 
 [node name="Ray" type="RayCast3D" parent="F1" unique_id=850070480]
 target_position = Vector3(0, -0.5, 0)
 
-[node name="UI Layers" type="Node2D" parent="." unique_id=637206959]
+[node name="UI Layers" type="Node" parent="." unique_id=2080428533]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="UI Layers" unique_id=933497376]
 layer = 3
