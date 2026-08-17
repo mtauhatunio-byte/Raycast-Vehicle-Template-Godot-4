@@ -30,6 +30,9 @@ gdscript/warnings/unused_parameter=0
 
 [display]
 
+window/size/viewport_width=1600
+window/size/viewport_height=900
+window/size/mode=3
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"
 window/vsync/vsync_mode=0
@@ -42,6 +45,7 @@ enabled=PackedStringArray("res://addons/project-time-tracker/plugin.cfg")
 
 folder_colors={
 "res://Files/": "orange",
+"res://Icons/": "pink",
 "res://Misc/": "gray",
 "res://Models/": "red",
 "res://Optmizations/": "teal",

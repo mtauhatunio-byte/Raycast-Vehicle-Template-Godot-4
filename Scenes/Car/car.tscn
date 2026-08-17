@@ -471,6 +471,10 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_uit5x")
 
+[sub_resource type="Gradient" id="Gradient_lorwl"]
+offsets = PackedFloat32Array(0, 0.348148, 0.992593)
+colors = PackedColorArray(0.20871013, 0.20871016, 0.20871013, 1, 0.360322, 0.36032203, 0.360322, 0.627451, 0.30569223, 0.3056922, 0.30569223, 0)
+
 [sub_resource type="ArrayMesh" id="ArrayMesh_0w0y4"]
 _surfaces = [{
 "aabb": AABB(-2.7342869e-13, -0.3, -0.3, 0.3, 0.6, 0.6),
@@ -503,6 +507,10 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_0w0y4")
+
+[sub_resource type="Gradient" id="Gradient_jfmnp"]
+offsets = PackedFloat32Array(0, 0.348148, 0.992593)
+colors = PackedColorArray(0.20871013, 0.20871016, 0.20871013, 1, 0.360322, 0.36032203, 0.360322, 0.627451, 0.30569223, 0.3056922, 0.30569223, 0)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_bqxbi"]
 
@@ -539,6 +547,7 @@ script = ExtResource("1_mshqt")
 steering = 30.0
 max_engine_force = 100.0
 engine_acceleration = 10.0
+smoke_speed_scale = 7.5
 compression_speed = 13.03
 ball = NodePath("ball")
 car_mesh = NodePath("F1/tmpParent/suv")
@@ -732,13 +741,6 @@ gi_mode = 0
 mesh = SubResource("ArrayMesh_lorwl")
 surface_material_override/0 = ExtResource("1_vnm1n")
 
-[node name="Camera" type="Camera3D" parent="F1/tmpParent/suv" unique_id=1090296427 node_paths=PackedStringArray("car_mesh", "ball")]
-transform = Transform3D(-0.99991435, 0.0045305574, -0.012280618, 0, 0.93819135, 0.34611693, 0.013089673, 0.34608728, -0.938111, 0.028437946, 1.6287149, -2.2983067)
-script = ExtResource("4_vibc5")
-car_mesh = NodePath("../body")
-ball = NodePath("../../../../ball")
-look_follow_strength = 0.5
-
 [node name="Wheels" type="Node3D" parent="F1/tmpParent/suv" unique_id=1479142434]
 
 [node name="Front" type="Node3D" parent="F1/tmpParent/suv/Wheels" unique_id=1382047578]
@@ -771,6 +773,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.60011184, 0.016871035, -0.0
 visible = false
 emitting = false
 amount = 100
+color = Color(0.38431373, 0.38431373, 0.38431373, 1)
+color_ramp = SubResource("Gradient_lorwl")
 
 [node name="wheel-back-left" type="MeshInstance3D" parent="F1/tmpParent/suv/Wheels/Back" unique_id=920720667]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.30011183, 0.22412258, -0.91110075)
@@ -784,6 +788,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.60011184, -0.016871035, 0.
 visible = false
 emitting = false
 amount = 100
+color = Color(0.38431373, 0.38431373, 0.38431373, 1)
+color_ramp = SubResource("Gradient_jfmnp")
+
+[node name="Camera" type="Camera3D" parent="F1/tmpParent/suv" unique_id=1090296427 node_paths=PackedStringArray("car_mesh", "ball")]
+transform = Transform3D(-0.99991435, 0.0045305574, -0.012280618, 0, 0.9381914, 0.34611696, 0.013089673, 0.3460873, -0.938111, 0.028437946, 1.6287149, -2.2983067)
+script = ExtResource("4_vibc5")
+car_mesh = NodePath("../body")
+ball = NodePath("../../../../ball")
+look_follow_strength = 0.5
 
 [node name="Ray" type="RayCast3D" parent="F1" unique_id=850070480]
 target_position = Vector3(0, -0.5, 0)

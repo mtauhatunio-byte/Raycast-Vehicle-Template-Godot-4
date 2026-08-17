@@ -9,12 +9,12 @@ disable_receive_shadows = true
 material = SubResource("StandardMaterial3D_to5t0")
 
 [sub_resource type="Curve" id="8"]
-_data = [Vector2(0, 0.306122), 0.0, 0.0, 0, 0, Vector2(1, 0.766582), 0.0, 0.0, 0, 0]
-point_count = 2
+_data = [Vector2(0, 0.13846159), 0.0, 0.0, 0, 0, Vector2(0.5251142, 0.5538462), 0.0, 0.0, 0, 0, Vector2(1, 0.32307696), 0.0, 0.0, 0, 0]
+point_count = 3
 
 [sub_resource type="Gradient" id="1"]
 offsets = PackedFloat32Array(0, 0.348148, 0.992593)
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.627451, 1, 1, 1, 0)
+colors = PackedColorArray(0.20871013, 0.20871016, 0.20871013, 1, 0.360322, 0.36032203, 0.360322, 0.627451, 0.30569223, 0.3056922, 0.30569223, 0)
 
 [node name="Smoke" type="CPUParticles3D" unique_id=1475362635]
 speed_scale = 1.6

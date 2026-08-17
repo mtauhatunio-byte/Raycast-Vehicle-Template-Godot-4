@@ -1,9 +1,9 @@
-@icon("uid://b0y7qj2gr3yyl") class_name PlayerCar3D extends Node3D
+class_name PlayerCar3D extends Node3D
 
 #region # @export variables
 
 @export_group("Sphere Offset")
-@export var sphere_offset: Vector3 = Vector3(0, 0, 0)
+@export var sphere_offset: Vector3 = Vector3(0, -0.75, 0)
 
 @export_group("Main")
 @export var acceleration: float = 50
@@ -18,10 +18,8 @@
 @export var engine_braking := 70.0
 @export var brake_strength: float = 3
 
-@export_group("Drifting (Useless)")
-@export var grip := 8.0
-@export var drift_grip := 2.0
-@export var drift_steering_multiplier := 1.5
+@export_group("Drifting")
+@export var smoke_speed_scale: float = 5.0
 
 # --- ENGINE SOUND CONFIGURATION ---
 @export_group("Sound Pitch")
@@ -106,6 +104,11 @@ var rotate_input: float  = 0
 var visual_spring_velocity: float = 0.0
 var engine_force := 0.0
 
+var prev_wheel_pos_bl := Vector3.ZERO
+var prev_wheel_pos_br := Vector3.ZERO
+
+var was_skidding_last_frame := false
+
 #endregion
 
 
@@ -126,13 +129,20 @@ func _ready() -> void:
 	wheels.show()
 	left.show()
 	right.show()
+	
+	prev_wheel_pos_bl = wheel_back_left.global_position
+	prev_wheel_pos_br = wheel_back_right.global_position
 
 
 func _process(delta: float) -> void:
 	
 	fps.text = "FPS: " + str(Engine.get_frames_per_second())
 	
-	if mode == MODES.DEAD: return
+	if mode == MODES.DEAD: 
+		car_mesh.position = ball.position
+		speed_lines_rect.hide()
+		blur_rect.hide()
+		return
 
 	speed_update()
 	
@@ -143,18 +153,18 @@ func _process(delta: float) -> void:
 	car_position_update(delta)
 	
 	suspension(delta)
+	
+	engine_pitch(delta)
 
 	if not ground_ray.is_colliding(): 
-		#left.emitting = false
-		#right.emitting = false
+		left.emitting = false
+		right.emitting = false
 		tire_screech.stop()
 		return
 
 	drifting()
 
 	body_tilting(delta)
-	
-	engine_pitch(delta)
 	
 	shader()
 
@@ -170,12 +180,63 @@ func _physics_process(delta: float) -> void:
 		ball.angular_velocity = Vector3.ZERO # Wipe out the spinning energy immediately
 
 	# Apply the safe driving force forward
-	ball.apply_central_force(car_mesh.global_transform.basis.z * engine_force)
+	ball.apply_force(car_mesh.global_transform.basis.z * engine_force)
 
 	# Keep the engine audio source pinned to the car mesh
 	engine_moving.global_position = car_mesh.global_position
 	
 	input(delta)
+
+
+func skid_marks() -> void:
+
+	# --- DISTANCE-LOCKED SMOOTH SKIDMARK LOOP ---
+	if SkidMarksManager.instance:
+		var right_vector = car_mesh.global_basis.x
+		var lateral_slip_speed = abs(right_vector.dot(ball.linear_velocity))
+		
+		var is_skidding_now = lateral_slip_speed > 5.2
+		
+		if is_skidding_now:
+			if not was_skidding_last_frame:
+				prev_wheel_pos_bl = wheel_back_left.global_position
+				prev_wheel_pos_br = wheel_back_right.global_position
+			
+			# 1. Measure exactly how many meters the wheels have traveled since the last quad
+			var dist_bl = prev_wheel_pos_bl.distance_to(wheel_back_left.global_position)
+			var dist_br = prev_wheel_pos_br.distance_to(wheel_back_right.global_position)
+			
+			# 2. THE SMOOTHING CRITERIA: Only emit if the tire has traveled a tiny step distance!
+			# A step distance of 0.2 meters (20cm) forces the quads to stitch together tightly,
+			# completely blending out the jagged gaps regardless of how fast you drive!
+			var step_distance = 0.22 
+			
+			# Ensure it's a real movement step, but exclude massive 4-meter glitch teleports
+			if dist_bl >= step_distance and dist_bl < 4.0:
+				SkidMarksManager.instance.create_skid_segment(prev_wheel_pos_bl, wheel_back_left.global_position, right_vector, true)
+				# Update the cache ONLY when a segment is successfully laid down
+				prev_wheel_pos_bl = wheel_back_left.global_position
+				
+			if dist_br >= step_distance and dist_br < 4.0:
+				SkidMarksManager.instance.create_skid_segment(prev_wheel_pos_br, wheel_back_right.global_position, right_vector, false)
+				prev_wheel_pos_br = wheel_back_right.global_position
+				
+		else:
+			# If we are NOT drifting normally, we continuously update position caches
+			prev_wheel_pos_bl = wheel_back_left.global_position
+			prev_wheel_pos_br = wheel_back_right.global_position
+			
+			# --- THE HISTORY REWIPE ---
+			# Tell the manager to empty its historical tire edge memories
+			# so that the next time you turn hard, it doesn't try to link lines across the whole map!
+			if SkidMarksManager.instance:
+				SkidMarksManager.instance.last_edges_bl.clear()
+				SkidMarksManager.instance.last_edges_br.clear()
+
+
+		was_skidding_last_frame = is_skidding_now
+
+
 
 
 func speed_update() -> void:
@@ -187,6 +248,14 @@ func ray_update() -> void:
 	ground_ray.global_position = ball.global_position
 	ground_ray.target_position = Vector3.DOWN * 2.0
 	ground_ray.force_raycast_update()
+	
+	# -------------- WHEEL RAYS POSITION UPDATES -------------------------
+	
+	#fl.position = Vector3(0.3, -0.786, 0.615)
+	#fr.position = Vector3(-0.3, -0.795, 0.638)
+	#
+	#bl.position = Vector3(0.3, -0.776, -0.911)
+	#br.position = Vector3(-0.3, -0.793, -0.899)
 
 
 func alignment(delta: float) -> void:
@@ -310,12 +379,14 @@ func input(delta: float) -> void:
 
 
 func drifting() -> void:
-	
 	var current_speed: float = get_current_speed()
 	
 	var local_velocity = car_mesh.global_basis.inverse() * ball.linear_velocity
 	var sideways_speed = abs(local_velocity.x)
-
+	
+	left.speed_scale = max(0.5, current_speed / smoke_speed_scale)
+	right.speed_scale = max(0.5, current_speed / smoke_speed_scale)
+	
 	# --- DRIFT PARTICLES & DRIFT AUDIO MATCHING ---
 	if current_speed > 30.0 and sideways_speed > 20:
 		left.emitting = true
@@ -353,7 +424,6 @@ func body_tilting(delta: float) -> void:
 			t += rotate_input * deg_to_rad(6.0)
 			
 		body_mesh.rotation.z = lerp(body_mesh.rotation.z, t, 10 * delta)
-
 
 
 func car_position_update(delta: float) -> void:
@@ -450,7 +520,6 @@ func suspension(delta: float) -> void:
 	wheel_back_left.transform.origin.y = lerp(wheel_back_left.transform.origin.y, target_left_y, 16.0 * delta)
 	right_wheel.transform.origin.y = lerp(right_wheel.transform.origin.y, target_right_y, 16.0 * delta)
 	wheel_back_right.transform.origin.y = lerp(wheel_back_right.transform.origin.y, target_right_y, 16.0 * delta)
-
 
 
 func align_with_y(xform: Transform3D, new_y: Vector3) -> Transform3D:

@@ -1,4 +1,4 @@
-@icon("uid://dsftwifgicywo") class_name PlayerCamera3D extends Camera3D
+class_name PlayerCamera3D extends Camera3D
 
 @export var car_mesh: MeshInstance3D 
 @export var ball: RigidBody3D 
@@ -136,7 +136,6 @@ func velocity(delta: float) -> void:
 	global_transform.basis = global_transform.basis.rotated(global_transform.basis.z, target_camera_roll * delta * 5.0)
 
 
-
 func positioning(delta: float) -> void:
 	
 	var speed_ratio: float = get_ratio()
@@ -160,9 +159,9 @@ func positioning(delta: float) -> void:
 
 
 func look_ahead(delta: float) -> void:
-	# =========================
+	# ========================= #
 	# Look Ahead
-	# =========================
+	# ========================= #
 	
 	var speed: float = get_speed()
 	

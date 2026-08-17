@@ -329,7 +329,19 @@ size = Vector3(2.3985596, 11.805939, 80.68349)
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_tsrje"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tsrje"]
+albedo_color = Color(0.5586314, 0.3744452, 3.85046e-07, 1)
+emission_enabled = true
+emission = Color(1, 1, 0, 1)
+emission_energy_multiplier = 16.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_tsrje"]
+
 [node name="Test" type="Node3D" unique_id=19141916]
+
+[node name="Car" parent="." unique_id=1074208897 node_paths=PackedStringArray("SUN") instance=ExtResource("5_l8y5p")]
+transform = Transform3D(-0.9862854, 0.027370505, 0.16276342, 0, 0.9861538, -0.1658329, -0.1650487, -0.16355856, -0.97262913, 61.34616, 1.4978235, 43.50152)
+SUN = NodePath("../Sun")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=533951421]
 environment = SubResource("Environment_83r8m")
@@ -801,4 +813,16 @@ use_denoiser = false
 max_texture_size = 2048
 light_data = ExtResource("5_vfjqq")
 
-[node name="Car" parent="." unique_id=1074208897 instance=ExtResource("5_l8y5p")]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1423317057]
+transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, 0, 136.16891, -128.57312)
+material_override = SubResource("StandardMaterial3D_tsrje")
+mesh = SubResource("SphereMesh_tsrje")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="MeshInstance3D" unique_id=197245325]
+light_color = Color(0.65, 0.30333334, 0, 1)
+light_energy = 16.0
+light_size = 1.0
+omni_range = 1511.729
+
+[node name="Camera3D2" type="Camera3D" parent="." unique_id=1061771942]
+transform = Transform3D(0.87672514, 0.2598821, 0.4047399, 0, 0.84146947, -0.54030466, -0.48099178, 0.47369868, 0.7377374, 62.487297, 42.550373, -12.360745)
