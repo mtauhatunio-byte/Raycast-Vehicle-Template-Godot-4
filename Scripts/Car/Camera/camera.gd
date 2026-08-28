@@ -84,9 +84,6 @@ func camera_direction(delta: float) -> void:
 	
 	var desired_forward: Vector3 = get_forward()
 
-	if PlayerCar3D.car.engine_force < -5.0:
-		target_reverse = 1.0
-
 	reverse_amount = lerp(
 		reverse_amount,
 		target_reverse,

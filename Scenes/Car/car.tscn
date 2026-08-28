@@ -793,6 +793,7 @@ color_ramp = SubResource("Gradient_jfmnp")
 
 [node name="Camera" type="Camera3D" parent="F1/tmpParent/suv" unique_id=1090296427 node_paths=PackedStringArray("car_mesh", "ball")]
 transform = Transform3D(-0.99991435, 0.0045305574, -0.012280618, 0, 0.9381914, 0.34611696, 0.013089673, 0.3460873, -0.938111, 0.028437946, 1.6287149, -2.2983067)
+current = true
 script = ExtResource("4_vibc5")
 car_mesh = NodePath("../body")
 ball = NodePath("../../../../ball")
@@ -837,6 +838,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Outline Layer" type="CanvasLayer" parent="UI Layers" unique_id=963787023]
+visible = false
 
 [node name="Outline Shader" type="ColorRect" parent="UI Layers/Outline Layer" unique_id=351566413]
 material = SubResource("ShaderMaterial_bqxbi")

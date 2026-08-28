@@ -1,9 +1,9 @@
 [gd_scene format=4 uid="uid://b411v2v6tf448"]
 
 [ext_resource type="Shader" uid="uid://c086dnepaust5" path="res://Shaders/Sky/Sky.gdshader" id="1_v7cj3"]
+[ext_resource type="PackedScene" uid="uid://q8py0ghrn74j" path="res://Test/test_car_3d.tscn" id="1_vfjqq"]
 [ext_resource type="Material" uid="uid://dkqt3np0hkubp" path="res://Models/Roads/Textures/Road Texture.tres" id="3_83r8m"]
 [ext_resource type="ArrayOccluder3D" uid="uid://djxkfofajilep" path="res://Optmizations/Occlusion Culling/Test Scene/test.occ" id="5_fpuyy"]
-[ext_resource type="PackedScene" uid="uid://nkrdmq7wvm8j" path="res://Scenes/Car/car.tscn" id="5_l8y5p"]
 [ext_resource type="LightmapGIData" uid="uid://dola3lofywe0" path="res://Optmizations/Baked Lighting/Test Scene/test.lmbake" id="5_vfjqq"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_v7cj3"]
@@ -339,9 +339,8 @@ emission_energy_multiplier = 16.0
 
 [node name="Test" type="Node3D" unique_id=19141916]
 
-[node name="Car" parent="." unique_id=1074208897 node_paths=PackedStringArray("SUN") instance=ExtResource("5_l8y5p")]
-transform = Transform3D(-0.9862854, 0.027370505, 0.16276342, 0, 0.9861538, -0.1658329, -0.1650487, -0.16355856, -0.97262913, 61.34616, 1.4978235, 43.50152)
-SUN = NodePath("../Sun")
+[node name="TestCar3D" parent="." unique_id=462009229 instance=ExtResource("1_vfjqq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 125.74811, 1.0005922, 72.05615)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=533951421]
 environment = SubResource("Environment_83r8m")
@@ -825,4 +824,4 @@ light_size = 1.0
 omni_range = 1511.729
 
 [node name="Camera3D2" type="Camera3D" parent="." unique_id=1061771942]
-transform = Transform3D(0.87672514, 0.2598821, 0.4047399, 0, 0.84146947, -0.54030466, -0.48099178, 0.47369868, 0.7377374, 62.487297, 42.550373, -12.360745)
+transform = Transform3D(0.39072746, -0.09694778, 0.91538686, 0, 0.99443835, 0.10532005, -0.9205064, -0.041151438, 0.38855436, 137.5182, 4.5226655, 83.11006)

@@ -1,39 +1,22 @@
 shader_type spatial;
 
-uniform vec3 center_lines : source_color = vec3(1, 1, 1); // White center lane line
-uniform vec3 side_lines : source_color = vec3(1, 1, 0);   // Yellow edge lines
-uniform vec3 color : source_color = vec3(0.1, 0.1, 0.1);  // Dark gray asphalt road base
-
-float draw_smooth_line(float uv_axis, float start, float end) {
-    float delta = fwidth(uv_axis);
-    float left_edge = smoothstep(start - delta, start + delta, uv_axis);
-    float right_edge = smoothstep(end + delta, end - delta, uv_axis);
-    return left_edge * right_edge;
-}
+uniform sampler2D road_texture : hint_default_white, filter_linear_mipmap, repeat_enable;
+// Adds a slider in your right-hand Inspector panel to manually line it up perfectly
+uniform float road_center_offset : hint_range(-2.0, 2.0) = 0.125;
 
 void fragment() {
-    // 1. Lock the line positions across the horizontal width of the road
-    float road_width = UV.x; 
+    // 1. Swap UVs to keep it rotated correctly
+    vec2 road_uv = vec2(UV.y, UV.x);
     
-    // 2. Lock the line rendering across the vertical length of the track
-    // fract() forces the mesh texture generation to repeat down the track loop infinitely
-    float track_length = fract(UV.y);
+    // 2. Multiply UV components to control tiling frequency
+    road_uv.x *= 10.0; 
+    road_uv.y *= 1.0; 
     
-    // 3. Calculate smooth outer gutters (using the width axis)
-    float left_line_mask = draw_smooth_line(road_width, 0.05, 0.1);
-    float right_line_mask = draw_smooth_line(road_width, 0.9, 0.95);
-    float side_mask = clamp(left_line_mask + right_line_mask, 0.0, 1.0);
+    // 3. Shift the width layout to fix the off-center alignment
+    road_uv.x += road_center_offset;
     
-    // 4. Calculate a perfectly centered dividing line
-    float center_mask = draw_smooth_line(road_width, 0.48, 0.52);
-    
-    // 5. Combine the masks and apply them down the track length
-    // Multiplying by step() ensures the lines exist through the repeating length pass
-    float line_presence = step(0.0, track_length);
-    
-    vec3 final_color = color;
-    final_color = mix(final_color, center_lines, center_mask * line_presence);
-    final_color = mix(final_color, side_lines, side_mask * line_presence);
-    
-    ALBEDO = final_color;
+    vec4 color = texture(road_texture, road_uv);
+    ALBEDO = color.rgb;
+    METALLIC = 0.0;
+    ROUGHNESS = 0.8;
 }
