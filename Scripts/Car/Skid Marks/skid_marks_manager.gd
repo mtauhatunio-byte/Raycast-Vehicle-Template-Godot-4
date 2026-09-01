@@ -43,22 +43,22 @@ func initialize_meshes() -> void:
 func create_skid_segment(start_pos: Vector3, end_pos: Vector3, right_vector: Vector3, is_left_tire: bool) -> void:
 	# Calculate a sharp perpendicular width offset vector
 	var track_width: float = 0.35
-	var lateral_offset = right_vector * (track_width * 0.5)
-	var road_lift = Vector3(0, 0.015, 0)
+	var lateral_offset: Vector3 = right_vector * (track_width * 0.5)
+	var road_lift: Vector3 = Vector3(0, 0.015, 0)
 	
 	# Find the center point to keep the engine rendering bounds happy
-	var segment_center = (start_pos + end_pos) * 0.5
+	var segment_center: Vector3 = (start_pos + end_pos) * 0.5
 	
 	# Current frame's target edges (Calculated LOCAL to the segment center)
-	var current_v0 = (end_pos - lateral_offset + road_lift) - segment_center
-	var current_v1 = (end_pos + lateral_offset + road_lift) - segment_center
+	var current_v0: Vector3 = (end_pos - lateral_offset + road_lift) - segment_center
+	var current_v1: Vector3 = (end_pos + lateral_offset + road_lift) - segment_center
 	
 	# Select our historical reference cache depending on which tyre is drawing
-	var last_edges = last_edges_bl if is_left_tire else last_edges_br
+	var last_edges: Array[Vector3] = last_edges_bl if is_left_tire else last_edges_br
 	
 	# Default fallback if there's no history (first frame of the drift)
-	var historical_v0 = (start_pos - lateral_offset + road_lift) - segment_center
-	var historical_v1 = (start_pos + lateral_offset + road_lift) - segment_center
+	var historical_v0: Vector3 = (start_pos - lateral_offset + road_lift) - segment_center
+	var historical_v1: Vector3 = (start_pos + lateral_offset + road_lift) - segment_center
 	
 	# If we have history from the previous frame, convert it into this segment's local space
 	if last_edges.size() == 2:
@@ -67,24 +67,24 @@ func create_skid_segment(start_pos: Vector3, end_pos: Vector3, right_vector: Vec
 		historical_v1 = last_edges[1] - segment_center
 		
 	# Update our history cache buffer with this frame's raw WORLD points for the next cycle
-	var world_v0 = end_pos - lateral_offset + road_lift
-	var world_v1 = end_pos + lateral_offset + road_lift
+	var world_v0: Vector3 = end_pos - lateral_offset + road_lift
+	var world_v1: Vector3 = end_pos + lateral_offset + road_lift
 	if is_left_tire:
 		last_edges_bl = [world_v0, world_v1]
 	else:
 		last_edges_br = [world_v0, world_v1]
 		
 	# Weave the triangles seamlessly (no gaps possible)
-	var arr_mesh = ArrayMesh.new()
-	var vertices = PackedVector3Array([
+	var arr_mesh: ArrayMesh = ArrayMesh.new()
+	var vertices: PackedVector3Array = PackedVector3Array([
 		historical_v0, historical_v1, current_v0,
 		historical_v1, current_v1, current_v0
 	])
 	
-	var normals = PackedVector3Array([Vector3.UP, Vector3.UP, Vector3.UP, Vector3.UP, Vector3.UP, Vector3.UP])
-	var uvs = PackedVector2Array([Vector2(0,0), Vector2(1,0), Vector2(0,1), Vector2(1,0), Vector2(1,1), Vector2(0,1)])
+	var normals: PackedVector3Array = PackedVector3Array([Vector3.UP, Vector3.UP, Vector3.UP, Vector3.UP, Vector3.UP, Vector3.UP])
+	var uvs: PackedVector2Array = PackedVector2Array([Vector2(0,0), Vector2(1,0), Vector2(0,1), Vector2(1,0), Vector2(1,1), Vector2(0,1)])
 	
-	var arrays = []
+	var arrays: Array[Array] = []
 	arrays.resize(Mesh.ARRAY_MAX)
 	arrays[Mesh.ARRAY_VERTEX] = vertices
 	arrays[Mesh.ARRAY_NORMAL] = normals
@@ -93,7 +93,7 @@ func create_skid_segment(start_pos: Vector3, end_pos: Vector3, right_vector: Vec
 	arr_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 	
 	# Recycle our object-pool node instantly
-	var recycled_node = pool[current_pool_index]
+	var recycled_node: MeshInstance3D = pool[current_pool_index]
 	recycled_node.mesh = null
 	recycled_node.mesh = arr_mesh
 	

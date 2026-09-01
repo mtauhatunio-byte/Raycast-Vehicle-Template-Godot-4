@@ -806,6 +806,7 @@ target_position = Vector3(0, -0.5, 0)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="UI Layers" unique_id=933497376]
 layer = 3
+visible = false
 follow_viewport_scale = 22.855
 
 [node name="Label" type="Label" parent="UI Layers/CanvasLayer" unique_id=1086840140]
@@ -838,7 +839,6 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Outline Layer" type="CanvasLayer" parent="UI Layers" unique_id=963787023]
-visible = false
 
 [node name="Outline Shader" type="ColorRect" parent="UI Layers/Outline Layer" unique_id=351566413]
 material = SubResource("ShaderMaterial_bqxbi")
@@ -850,6 +850,7 @@ grow_vertical = 2
 
 [node name="Blur Layer" type="CanvasLayer" parent="UI Layers" unique_id=51219598]
 layer = 2
+visible = false
 
 [node name="Motion Blur" type="ColorRect" parent="UI Layers/Blur Layer" unique_id=37367089]
 material = SubResource("ShaderMaterial_tsrje")

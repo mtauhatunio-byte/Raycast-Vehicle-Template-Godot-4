@@ -32,7 +32,7 @@ var reverse_amount := 0.0
 
 static var current_camera: PlayerCamera3D = null
 
-func _ready():
+func _ready() -> void:
 	camera_forward = -car_mesh.global_basis.z
 	current_camera = self
 
@@ -43,9 +43,9 @@ func get_speed() -> float:
 
 func get_ratio() -> float:
 	
-	var speed = get_speed()
+	var speed: float = get_speed()
 	
-	var speed_ratio = clamp(speed / max_speed, 0.0, 1.0)
+	var speed_ratio: float = clamp(speed / max_speed, 0.0, 1.0)
 	
 	return speed_ratio
 
@@ -64,7 +64,7 @@ func fov_calc(delta: float) -> void:
 	var speed_ratio: float = get_ratio()
 
 	# 1. First, find out exactly what the IDEAL target FOV should be right now based on speed
-	var target_fov = lerp(base_fov, max_fov, speed_ratio)
+	var target_fov: float = lerp(base_fov, max_fov, speed_ratio)
 	
 	# 2. Then, use delta smoothly over time to slide the camera's current FOV toward that target.
 	# A speed factor of 5.0 makes the camera lens smoothly stretch out as you accelerate!
@@ -123,11 +123,11 @@ func velocity(delta: float) -> void:
 	
 		# --- CAMERA DRIFT SWAY TILT ---
 	# Find out how fast the car is sliding sideways
-	var current_right_vector = car_mesh.global_basis.x
-	var slide_speed = current_right_vector.dot(ball.linear_velocity)
+	var current_right_vector := car_mesh.global_basis.x
+	var slide_speed := current_right_vector.dot(ball.linear_velocity)
 	
 	# Turn that sliding speed into a lens tilt angle (max 4 degrees)
-	var target_camera_roll = clamp(-slide_speed * 0.05, deg_to_rad(-drift_tilt), deg_to_rad(+drift_tilt))
+	var target_camera_roll: float = clampf(-slide_speed * 0.05, deg_to_rad(-drift_tilt), deg_to_rad(+drift_tilt))
 	
 	# Smoothly tilt the camera lens into the drift arc
 	global_transform.basis = global_transform.basis.rotated(global_transform.basis.z, target_camera_roll * delta * 5.0)
@@ -141,13 +141,13 @@ func positioning(delta: float) -> void:
 	# Camera Position
 	# =========================
 
-	var current_distance = lerp(
+	var current_distance: float = lerp(
 		distance,
 		distance + 3.0,
 		speed_ratio
 	)
 
-	var desired_position = car_mesh.global_position + camera_forward * current_distance + Vector3.UP * height
+	var desired_position: Vector3 = car_mesh.global_position + camera_forward * current_distance + Vector3.UP * height
 
 	global_position = global_position.lerp(
 		desired_position,
@@ -187,7 +187,7 @@ func look_ahead(delta: float) -> void:
 	).orthonormalized()
 
 
-func _process(delta: float):
+func _process(delta: float) -> void:
 
 	if ball == null or car_mesh == null:
 		return
@@ -206,19 +206,19 @@ func _process(delta: float):
 
 
 func apply_screen_shake() -> void:
-	var strength = ScreenShake.shake_strength
+	var strength: float = ScreenShake.shake_strength
 	
 	if strength <= 0.0:
 		return
 		
 	# Square the strength for a snappier, more dynamic feeling asset fadeout
-	var current_power = strength * strength
+	var current_power: float = strength * strength
 	
 	# Calculate random offsets using the limits defined in ScreenShake
-	var offset_x = randf_range(-ScreenShake.max_shake_offset.x, ScreenShake.max_shake_offset.x) * current_power
-	var offset_y = randf_range(-ScreenShake.max_shake_offset.y, ScreenShake.max_shake_offset.y) * current_power
-	var offset_z = randf_range(-ScreenShake.max_shake_offset.z, ScreenShake.max_shake_offset.z) * current_power
-	var roll_tilt = randf_range(-ScreenShake.max_shake_roll, ScreenShake.max_shake_roll) * current_power
+	var offset_x: float = randf_range(-ScreenShake.max_shake_offset.x, ScreenShake.max_shake_offset.x) * current_power
+	var offset_y: float = randf_range(-ScreenShake.max_shake_offset.y, ScreenShake.max_shake_offset.y) * current_power
+	var offset_z: float = randf_range(-ScreenShake.max_shake_offset.z, ScreenShake.max_shake_offset.z) * current_power
+	var roll_tilt: float = randf_range(-ScreenShake.max_shake_roll, ScreenShake.max_shake_roll) * current_power
 	
 	# Displace the position using the camera's local horizontal and vertical vectors
 	global_position += global_transform.basis.x * offset_x

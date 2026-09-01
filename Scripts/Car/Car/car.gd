@@ -192,10 +192,10 @@ func skid_marks() -> void:
 
 	# --- DISTANCE-LOCKED SMOOTH SKIDMARK LOOP ---
 	if SkidMarksManager.instance:
-		var right_vector = car_mesh.global_basis.x
-		var lateral_slip_speed = abs(right_vector.dot(ball.linear_velocity))
+		var right_vector: Vector3 = car_mesh.global_basis.x
+		var lateral_slip_speed: float = absf(right_vector.dot(ball.linear_velocity))
 		
-		var is_skidding_now = lateral_slip_speed > 5.2
+		var is_skidding_now: bool = lateral_slip_speed > 5.2
 		
 		if is_skidding_now:
 			if not was_skidding_last_frame:
@@ -203,13 +203,13 @@ func skid_marks() -> void:
 				prev_wheel_pos_br = wheel_back_right.global_position
 			
 			# 1. Measure exactly how many meters the wheels have traveled since the last quad
-			var dist_bl = prev_wheel_pos_bl.distance_to(wheel_back_left.global_position)
-			var dist_br = prev_wheel_pos_br.distance_to(wheel_back_right.global_position)
+			var dist_bl: float = prev_wheel_pos_bl.distance_to(wheel_back_left.global_position)
+			var dist_br: float = prev_wheel_pos_br.distance_to(wheel_back_right.global_position)
 			
 			# 2. THE SMOOTHING CRITERIA: Only emit if the tire has traveled a tiny step distance!
 			# A step distance of 0.2 meters (20cm) forces the quads to stitch together tightly,
 			# completely blending out the jagged gaps regardless of how fast you drive!
-			var step_distance = 0.22 
+			var step_distance: float = 0.22 
 			
 			# Ensure it's a real movement step, but exclude massive 4-meter glitch teleports
 			if dist_bl >= step_distance and dist_bl < 4.0:
@@ -259,9 +259,9 @@ func ray_update() -> void:
 
 
 func alignment(delta: float) -> void:
-	var n = ground_ray.get_collision_normal()
-	var xform = align_with_y(car_mesh.global_transform, n)
-	var next_transform = car_mesh.global_transform.interpolate_with(xform, 10 * delta)
+	var n: Vector3 = ground_ray.get_collision_normal()
+	var xform: Transform3D = align_with_y(car_mesh.global_transform, n)
+	var next_transform: Transform3D = car_mesh.global_transform.interpolate_with(xform, 10 * delta)
 	next_transform.basis = next_transform.basis.orthonormalized()
 	car_mesh.global_transform = next_transform
 
@@ -313,18 +313,18 @@ func shader() -> void:
 		
 		# 2. Modify ANIMATION_SPEED by your car's speed
 		var max_flicker_speed: float = 20.0 
-		var current_flicker_speed = max_flicker_speed * speed_ratio
+		var current_flicker_speed: float = max_flicker_speed * speed_ratio
 		speed_lines_rect.material.set_shader_parameter("animation_speed", current_flicker_speed)
 		
 		# 3. Modify LINE_DENSITY by your car's speed (Up to a maximum of 0.5)
 		var max_density: float = 0.5
-		var current_density = max_density * speed_ratio
+		var current_density: float = max_density * speed_ratio
 		speed_lines_rect.material.set_shader_parameter("line_density", current_density)
 		
 	# --- RADIAL BLUR UPDATE LOGIC (GDSCRIPT ONLY) ---
 	if blur_rect and blur_rect.material:
 		# Maps the 0.0-1.0 speed ratio directly to a 0.0-0.5 blur window
-		var target_blur = remap(speed_ratio, 0.0, 1.0, 0.0, 0.4)
+		var target_blur: float = remap(speed_ratio, 0.0, 1.0, 0.0, 0.4)
 		
 		# Set a hard performance limit at 24 samples directly from code
 		blur_rect.material.set_shader_parameter("samples", 12)
@@ -381,8 +381,8 @@ func input(delta: float) -> void:
 func drifting() -> void:
 	var current_speed: float = get_current_speed()
 	
-	var local_velocity = car_mesh.global_basis.inverse() * ball.linear_velocity
-	var sideways_speed = abs(local_velocity.x)
+	var local_velocity: Vector3 = car_mesh.global_basis.inverse() * ball.linear_velocity
+	var sideways_speed: float = abs(local_velocity.x)
 	
 	left.speed_scale = max(0.5, current_speed / smoke_speed_scale)
 	right.speed_scale = max(0.5, current_speed / smoke_speed_scale)
@@ -404,14 +404,14 @@ func body_tilting(delta: float) -> void:
 	var current_speed: float = get_current_speed()
 	
 	if current_speed > turn_stop_limit:
-		var new_basis = car_mesh.global_transform.basis.rotated(car_mesh.global_transform.basis.y, rotate_input)
+		var new_basis: Basis = car_mesh.global_transform.basis.rotated(car_mesh.global_transform.basis.y, rotate_input)
 		car_mesh.global_transform.basis = car_mesh.global_transform.basis.slerp(new_basis, turn_speed * delta)
 		car_mesh.global_transform = car_mesh.global_transform.orthonormalized()
 		
 		# --- FIXED SAFE TILT MATH ---
 		# Clamp the speed factor so that driving incredibly fast doesn't cause infinite tilting
 		var safe_speed_factor: float = clamp(current_speed, 0.0, max_expected_speed)
-		var t = -rotate_input * safe_speed_factor / body_tilt
+		var t: float = -rotate_input * safe_speed_factor / body_tilt
 		
 		# Hard cap the final rotation angle (e.g., deg_to_rad(25) means it can never tilt more than 25 degrees)
 		var max_tilt_angle: float = deg_to_rad(25.0)
@@ -446,7 +446,7 @@ func suspension(delta: float) -> void:
 			var hit_dist: float = ball.global_transform.origin.distance_to(sensor.get_collision_point())
 			total_height += hit_dist
 			
-	var target_y = ball.global_transform.origin.y + sphere_offset.y
+	var target_y: float = ball.global_transform.origin.y + sphere_offset.y
 	
 	if ground_sensors_count > 0:
 		var avg_ground_dist: float = total_height / ground_sensors_count
@@ -463,20 +463,20 @@ func suspension(delta: float) -> void:
 		target_y -= 0.25
 		
 	# --- ARCADE CONSTRAINED SPRING SIMULATION ---
-	var current_mesh_y = car_mesh.global_transform.origin.y
-	var displacement = target_y - current_mesh_y
+	var current_mesh_y: float = car_mesh.global_transform.origin.y
+	var displacement: float = target_y - current_mesh_y
 	
 	# 1. HOOKE'S LAW STIFFNESS
 	# We multiply compression_speed to get a fast, snappy reaction force
-	var stiffness = compression_speed * 12.0
-	var spring_force = displacement * stiffness
+	var stiffness: float = compression_speed * 12.0
+	var spring_force: float = displacement * stiffness
 	
 	# 2. CRITICAL SPRING DAMPING (The Golden Bounce Fix)
 	# This formula calculates the exact amount of friction needed to let the car
 	# bounce precisely ONCE on heavy impacts and then stop completely.
 	# Change '0.5' to '0.3' for more bounce, or '0.7' for a heavier, stiffer thud!
-	var damping_ratio = 0.55 
-	var damping_force = 2.0 * sqrt(stiffness) * damping_ratio * visual_spring_velocity
+	var damping_ratio: float = 0.55 
+	var damping_force: float = 2.0 * sqrt(stiffness) * damping_ratio * visual_spring_velocity
 	
 	# 3. APPLY FORCES
 	visual_spring_velocity += (spring_force - damping_force) * delta
@@ -484,7 +484,7 @@ func suspension(delta: float) -> void:
 	
 	# --- 4. THE ABSOLUTE FLOOR SHIELD ---
 	# Hard ceiling constraint to completely stop the mesh from sinking past the tire treads
-	var absolute_floor_limit = ball.global_transform.origin.y + sphere_offset.y - 0.35
+	var absolute_floor_limit: float = ball.global_transform.origin.y + sphere_offset.y - 0.35
 	if car_mesh.global_transform.origin.y < absolute_floor_limit:
 		car_mesh.global_transform.origin.y = absolute_floor_limit
 		
@@ -504,7 +504,7 @@ func suspension(delta: float) -> void:
 		
 		# Wheels push UP into the wheel wells during heavy impacts or land slams
 	var tire_compress: float = 0.0
-	var current_compression = ideal_ride_distance - (total_height / max(1, ground_sensors_count))
+	var current_compression: float = ideal_ride_distance - (total_height / max(1, ground_sensors_count))
 	
 	if current_compression > 0.03 or ball.linear_velocity.y < -1.0:
 		tire_compress = (max(0.0, current_compression) * 0.4) + (abs(ball.linear_velocity.y) * 0.05)
@@ -512,8 +512,8 @@ func suspension(delta: float) -> void:
 		tire_compress = clamp(tire_compress, 0.0, 0.25)
 		
 	# Final target positions relative to the moving body container
-	var target_left_y = default_wheel_y + tilt_offset + tire_compress
-	var target_right_y = default_wheel_y - tilt_offset + tire_compress
+	var target_left_y: float = default_wheel_y + tilt_offset + tire_compress
+	var target_right_y: float = default_wheel_y - tilt_offset + tire_compress
 
 	# Smoothly update local wheel heights
 	left_wheel.transform.origin.y = lerp(left_wheel.transform.origin.y, target_left_y, 16.0 * delta)
@@ -549,7 +549,7 @@ func _input(event: InputEvent) -> void:
 
 func get_current_speed() -> float:
 	
-	var damping = max(0.001, 1.0 - get_physics_process_delta_time() * ball.linear_damp)
+	var damping: float = max(0.001, 1.0 - get_physics_process_delta_time() * ball.linear_damp)
 
 	return ball.linear_velocity.length() / damping
 
