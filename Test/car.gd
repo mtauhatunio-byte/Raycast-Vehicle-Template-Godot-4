@@ -54,24 +54,37 @@ var side_speed: float
 
 func _unhandled_input(event: InputEvent) -> void:
 	
-	if event.is_action_pressed("Handbrake"):
-		handbreak = true
-		slipping = true
-	elif event.is_action_released("Handbrake"):
-		handbreak = false
+	#if event.is_action_pressed("Handbrake"):
+		#handbreak = true
+		#slipping = true
+	#elif event.is_action_released("Handbrake"):
+		#handbreak = false
+	#
+	#if event.is_action_pressed("Forward"):
+		#motor_input = Input.get_action_strength("Forward")
+	#elif event.is_action_released("Forward"):
+		#motor_input = 0
+	#
+	#if event.is_action_pressed("Backward"):
+		#motor_input = -Input.get_action_strength("Backward")
+	#elif event.is_action_released("Backward"):
+		#motor_input = 0
+
 	
-	if event.is_action_pressed("Forward"):
-		motor_input = 1
-	elif event.is_action_released("Forward"):
-		motor_input = 0
-	
-	if event.is_action_pressed("Backward"):
-		motor_input = -1
-	elif event.is_action_released("Backward"):
-		motor_input = 0
+	pass
 
 
 func _physics_process(delta: float) -> void:
+	
+		
+	handbreak = Input.is_action_pressed("Handbrake")
+	if handbreak:
+		slipping = true
+		
+		
+	
+	motor_input = Input.get_action_strength("Forward") - Input.get_action_strength("Backward")
+	
 	if show_speed_ray and OS.is_debug_build():
 		DebugDraw3D.draw_arrow_ray(global_position + Vector3(0, 1, 0), linear_velocity, 1.0, Color.PINK, 0.1)
 		
@@ -122,20 +135,17 @@ func _physics_process(delta: float) -> void:
 func wheel_rotation(wheel: RaycastWheel, delta: float) -> void:
 	if not wheel.use_as_steering: return
 	
-	turn_input = Input.get_axis("Right", "Left")
-	if turn_input:
-		wheel.rotation.y = clampf(
-			wheel.rotation.y + turn_input * delta,
-			deg_to_rad(-tire_turn_max_degress),
-			deg_to_rad(+tire_turn_max_degress),
-		)
-		
-	else:
-		wheel.rotation.y = lerpf(
-			wheel.rotation.y,
-			0,
-			tire_turn_speed * delta
-		)
+	turn_input = Input.get_action_strength("Left") - Input.get_action_strength("Right")
+	
+	# Turn input (-1.0 to 1.0) multiplied by max degrees tells us exactly where the wheels SHOULD point
+	var target_rotation: float = turn_input * deg_to_rad(tire_turn_max_degress)
+	
+	# Smoothly interpolate the wheel mesh toward that exact target position
+	wheel.rotation.y = lerpf(
+		wheel.rotation.y,
+		target_rotation,
+		tire_turn_speed * delta
+	)
 
 
 func get_point_velocity(point: Vector3) -> Vector3:

@@ -823,4 +823,4 @@ omni_range = 1511.729
 [node name="Camera3D2" type="Camera3D" parent="." unique_id=1061771942]
 transform = Transform3D(0.39072746, -0.09694778, 0.91538686, 0, 0.99443835, 0.10532005, -0.9205064, -0.041151438, 0.38855436, 137.5182, 4.5226655, 83.11006)
 
-[node name="Car2" parent="." unique_id=1074208897 instance=ExtResource("5_l8y5p")]
+[node name="CAR" parent="." unique_id=1074208897 instance=ExtResource("5_l8y5p")]

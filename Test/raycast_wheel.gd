@@ -16,7 +16,7 @@ class_name RaycastWheel extends RayCast3D
 @export var use_as_steering: bool = false
 
 @export_group("Nodes")
-@export var mesh: Node3D
+@export var mesh: MeshInstance3D
 @export var shapecast: ShapeCast3D
 @export var car: RaycastCar
 
@@ -24,8 +24,7 @@ class_name RaycastWheel extends RayCast3D
 @export var grip_curve: Curve
 
 @export_group("Debug")
-@export_custom(PROPERTY_HINT_GROUP_ENABLE, "") var enable_debug: bool = false
-@export_subgroup("Debug Rays")
+@export var enable_debug: bool = false
 @export var show_accel_rays: bool = false
 @export var show_steer_rays: bool = false
 
@@ -37,63 +36,53 @@ var z_friction: float = 0.01
 var steering_angle: float = 0.0
 
 func _ready() -> void:
+	# Keep setup logic uniform
 	target_position.y = -(rest_dist + wheel_radius + over_extend)
-	
 	if shapecast:
 		shapecast.target_position.y = -(rest_dist + over_extend) - shapecast_offset
 		if car:
 			shapecast.add_exception(car)
-			
-
 
 func simulate_wheels(car_node: RaycastCar) -> void:
-
-	#region Misc AKA IDK
-	
+	# 1. FIXED: Removed target_position jitter code that was overwriting _ready()
 	force_raycast_update()
-	shapecast.force_shapecast_update()
-	
-	target_position.y = -(rest_dist + wheel_radius + over_extend) - shapecast_offset
 	if shapecast:
-		shapecast.target_position.y = -(rest_dist + over_extend)
-		#shapecast.enabled = false
-		
-		
-	#print("Target Position: ", target_position.y)
-	#print("Shape Cast Target Position: ", shapecast.target_position.y)
+		shapecast.force_shapecast_update()
 	
 	var forward: Vector3 = -global_basis.z.normalized()
 	var vel: float = forward.dot(car_node.linear_velocity)
 	
-	mesh.rotate_x(-vel * get_physics_process_delta_time() / wheel_radius)
+	# Mesh rotation based on actual chassis forward speed
+	if mesh:
+		mesh.rotate_x(-vel * get_physics_process_delta_time() / wheel_radius)
 	
-	if not shapecast and not is_colliding(): return
-	if shapecast and not shapecast.is_colliding(): return
+	# Collision check validation
+	var has_collision = shapecast.is_colliding() if shapecast else is_colliding()
+	if not has_collision: return
 	
-	var contact: Vector3 = get_collision_point()
-	if shapecast:
-		contact = shapecast.get_collision_point(0)
-	var spring_length: float = maxf(0.0, global_position.distance_to(contact) - wheel_radius)
+	# Extract true collision point
+	var collision_point: Vector3 = shapecast.get_collision_point(0) if shapecast else get_collision_point()
+	var collision_normal: Vector3 = shapecast.get_collision_normal(0) if shapecast else get_collision_normal()
+	
+	# Calculate suspension length off true point, NOT mesh position
+	var spring_length: float = maxf(0.0, global_position.distance_to(collision_point) - wheel_radius)
 	var offset: float = rest_dist - spring_length
 	
-	mesh.position.y = move_toward(mesh.position.y, -spring_length, 5.0 * get_physics_process_delta_time())
-	contact = mesh.global_position
-	var force_pos: Vector3 = contact - car_node.global_position
-	#endregion
+	# Animate the visual mesh smoothly
+	if mesh:
+		mesh.position.y = move_toward(mesh.position.y, -spring_length, 5.0 * get_physics_process_delta_time())
+	
+	# FIXED: Physics calculation anchor points should use true collision data, not visual meshes
+	var force_pos: Vector3 = collision_point - car_node.global_position
 
-
-	#region Suspension
+	#region Suspension Physics
 	var spring_force: float = spring_strength * offset
-	var tire_vel: Vector3 = car_node.get_point_velocity(contact)
+	var tire_vel: Vector3 = car_node.get_point_velocity(collision_point)
 	var spring_damp_f: float = spring_damping * global_basis.y.dot(tire_vel)
 	
 	var suspension_force: float = clampf(spring_force - spring_damp_f, -max_spring_force, +max_spring_force)
-	
-	var y_force: Vector3 = suspension_force * get_collision_normal()
-	if shapecast:
-		y_force = suspension_force * shapecast.get_collision_normal(0)
-#endregion
-
+	var y_force: Vector3 = suspension_force * collision_normal
+	#endregion
 
 	#region Acceleration
 	if use_as_traction and car_node.motor_input:
@@ -101,21 +90,19 @@ func simulate_wheels(car_node: RaycastCar) -> void:
 		var ac: float = car_node.accel_curve.sample_baked(speed_ratio)
 		var accel_force: Vector3 = forward * car_node.acceleration * car_node.motor_input * ac
 		car_node.apply_force(accel_force, force_pos)
-		if show_accel_rays: DebugDraw3D.draw_arrow_ray(contact, accel_force/car_node.mass, 1.0, Color.RED, 0.01)
-#endregion
+		
+		if show_accel_rays and enable_debug: 
+			DebugDraw3D.draw_arrow_ray(collision_point, accel_force / car_node.mass, 1.0, Color.RED, 0.01)
+	#endregion
 
-
-	#region Steering
-	# --- ANTI-ACKERMAN INJECTION ---
-	# Uses the custom steering_angle passed from your main Car script
+	#region Steering & Friction Matrix
 	var wheel_basis: Basis = global_basis
-	if use_as_steering and "steering_angle" in self:
+	if use_as_steering:
 		wheel_basis = global_basis.rotated(global_basis.y, steering_angle)
 
 	var steering_x_vel: float = wheel_basis.x.dot(tire_vel)
-	
-	# FIXED: Prevent division-by-zero crashes when the car stops or changes direction
 	var current_vel_len: float = tire_vel.length()
+	
 	if current_vel_len > 0.01:
 		grip_factor = absf(steering_x_vel / current_vel_len)
 	else:
@@ -124,11 +111,9 @@ func simulate_wheels(car_node: RaycastCar) -> void:
 	if absf(vel) < 0.2:
 		grip_factor = 0.0
 		
-	# Look up baseline traction from your curve
 	var target_traction: float = grip_curve.sample_baked(grip_factor)
 	
-	# --- SMOOTH ARCADE DRIFT STATE LOGIC ---
-	# --- DRIFT STATE ENGINE ---
+	# Drift State Modifications
 	if use_as_traction:
 		if not car_node.handbreak and grip_factor < 0.45:
 			car_node.slipping = false
@@ -138,23 +123,17 @@ func simulate_wheels(car_node: RaycastCar) -> void:
 		elif car_node.slipping:
 			target_traction = 0.65
 			
-			# --- THE SPEED FIX: SCRUB OFF SIDEWAYS MOMENTUM ---
-			# We calculate how fast we are sliding out, and apply a counter-drag force.
-			# This slows down the actual speed of the drift so it doesn't feel like a rocket!
-			var drift_brake: float = 0.4  # Higher numbers = slower, heavier drifts. Try 0.3 to 0.6
-			var drag_force: Vector3 = -global_basis.x * steering_x_vel * car_node.mass * drift_brake * get_physics_process_delta_time()
+			# FIXED: Removed delta time multiplication here. Rigidbody forces handle delta internally.
+			var drift_brake: float = 0.4 
+			var drag_force: Vector3 = -global_basis.x * steering_x_vel * car_node.mass * drift_brake
 			car_node.apply_central_force(drag_force)
 	
-	# Smoothly interpolate traction across frames to eradicate the invisible wall snap
-	var current_x_traction: float = target_traction
-	if "x_traction" in self:
-		x_traction = lerpf(x_traction, target_traction, 12.0 * get_physics_process_delta_time())
-		current_x_traction = x_traction
-		
+	x_traction = lerpf(x_traction, target_traction, 12.0 * get_physics_process_delta_time())
+	
 	var gravity: float = -car_node.get_gravity().y
-	var x_force: Vector3 = -wheel_basis.x * steering_x_vel * current_x_traction * ((car_node.mass * gravity) / car_node.wheels.size())
+	var x_force: Vector3 = -wheel_basis.x * steering_x_vel * x_traction * ((car_node.mass * gravity) / car_node.wheels.size())
 
-	# --- LONGITUDINAL TRACTION & BRAKING ---
+	# Forward friction matrix (Z Force)
 	var f_vel: float = forward.dot(tire_vel)
 	var target_z_friction: float = z_traction
 	
@@ -163,41 +142,32 @@ func simulate_wheels(car_node: RaycastCar) -> void:
 	elif braking: 
 		target_z_friction = brake_strength
 	elif car_node.slipping and use_as_traction:
-		# Loosen forward tire resistance during a slide so the car glides cleanly out
 		target_z_friction = z_traction * 0.5
-	else:
-		target_z_friction = z_traction
-		
-	var blended_z_friction: float = target_z_friction
-	if "z_friction" in self:
-		z_friction = lerpf(z_friction, target_z_friction, 12.0 * get_physics_process_delta_time())
-		blended_z_friction = z_friction
-		
-	var z_force: Vector3 = wheel_basis.z * f_vel * blended_z_friction * ((car_node.mass * gravity) / car_node.wheels.size())
 	
-	# Low-speed hill holding and stability calculation
-	# --- FIXED: Only stabilize if the car is genuinely resting/braking ---
-	# If the motor input is active or the car is slipping, DO NOT hijack the drift forces!
+	z_friction = lerpf(z_friction, target_z_friction, 12.0 * get_physics_process_delta_time())
+	var z_force: Vector3 = wheel_basis.z * f_vel * z_friction * ((car_node.mass * gravity) / car_node.wheels.size())
+	
+	# Low speed hill holding override
 	if absf(f_vel) < 0.1 and not car_node.motor_input and not car_node.slipping:
 		var susp: Vector3 = wheel_basis.y * suspension_force
 		var down_alignment: float = car_node.global_basis.y.dot(Vector3.UP)
 		z_force.z = susp.z * down_alignment
 		x_force.x = susp.z * down_alignment
-		# 3. THROTTLE RELEASE OVERRIDE: If the player lets go of the gas, kill the drift instantly
 		if car_node.motor_input == 0.0:
 			car_node.slipping = false
 
-	
-	# Clamp extreme spikes so the physics calculations never shatter on hard landings
+	# Clamping thresholds
 	var max_force_clamp: float = (car_node.mass * gravity) / car_node.wheels.size() * 3.0
 	x_force = x_force.limit_length(max_force_clamp)
 	z_force = z_force.limit_length(max_force_clamp)
+	
+	# Apply final physics vectors
 	
 	car_node.apply_force(x_force, force_pos)
 	car_node.apply_force(y_force, force_pos)
 	car_node.apply_force(z_force, force_pos)
 	
-	if show_steer_rays and OS.is_debug_build(): 
-		DebugDraw3D.draw_arrow_ray(contact, x_force/car_node.mass, 1, Color.GREEN, 0.01)
-		DebugDraw3D.draw_arrow_ray(contact, y_force/car_node.mass, 1, Color.BLUE, 0.01)
+	if show_steer_rays and enable_debug and OS.is_debug_build(): 
+		DebugDraw3D.draw_arrow_ray(collision_point, x_force / car_node.mass, 1, Color.GREEN, 0.01)
+		DebugDraw3D.draw_arrow_ray(collision_point, y_force / car_node.mass, 1, Color.BLUE, 0.01)
 	#endregion

@@ -4,7 +4,7 @@
 [ext_resource type="Material" uid="uid://dkqt3np0hkubp" path="res://Models/Roads/Textures/Road Texture.tres" id="2_6q7ow"]
 [ext_resource type="ArrayOccluder3D" uid="uid://djxkfofajilep" path="res://Optmizations/Occlusion Culling/Test Scene/test.occ" id="3_tu3r6"]
 [ext_resource type="LightmapGIData" uid="uid://dola3lofywe0" path="res://Optmizations/Baked Lighting/Test Scene/test.lmbake" id="4_6sgdl"]
-[ext_resource type="PackedScene" uid="uid://bf1wyrvuqkkft" path="res://Test/car.scn" id="5_ast4c"]
+[ext_resource type="PackedScene" uid="uid://brrregeexlw0e" path="res://Test/car.tscn" id="5_ast4c"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_v7cj3"]
 shader = ExtResource("1_ast4c")
@@ -348,7 +348,7 @@ light_energy = 2.0
 shadow_enabled = true
 
 [node name="Track" type="Node3D" parent="." unique_id=30814673]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 90.26154, -10.059191, 33.851448)
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 90.26154, -34.67366, 33.851448)
 
 [node name="Straight 1" type="Node3D" parent="Track" unique_id=1384511556]
 
