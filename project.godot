@@ -11,7 +11,6 @@ config_version=5
 [application]
 
 config/name="Car go VROOOOOOOOOOOOOOOOOO,"
-run/main_scene="uid://dg88hvjqqpepm"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
@@ -48,17 +47,8 @@ enabled=PackedStringArray("res://addons/project-time-tracker/plugin.cfg")
 [file_customization]
 
 folder_colors={
-"res://Files/": "orange",
-"res://Icons/": "pink",
-"res://Misc/": "gray",
-"res://Models/": "red",
-"res://Optmizations/": "teal",
-"res://Scenes/": "green",
-"res://Scripts/": "blue",
-"res://Shaders/": "purple",
-"res://Sound Effects/": "yellow",
-"res://Sprites/": "red",
-"res://Terrain/": "pink"
+"res://Cars/": "red",
+"res://Shaders/": "purple"
 }
 
 [filesystem]
