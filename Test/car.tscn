@@ -1,10 +1,10 @@
 [gd_scene format=4 uid="uid://brrregeexlw0e"]
 
 [ext_resource type="Script" uid="uid://sog4lj0f0m2a" path="res://Test/car.gd" id="1_4g4y8"]
-[ext_resource type="Texture2D" uid="uid://dotbik1q6s2s6" path="res://Textures/Prototype/prototype_green.png" id="2_2h0f2"]
+[ext_resource type="Curve" uid="uid://c6o15xojar1vn" path="res://Test/Curves/accel_curve.tres" id="2_4g4y8"]
 [ext_resource type="Script" uid="uid://cwtijuihoaxvf" path="res://Test/raycast_wheel.gd" id="3_u0qaw"]
-[ext_resource type="Curve" uid="uid://b02ul4c55u1bp" path="res://Test/Curves/front_tires_curve   .tres" id="4_gqsk6"]
-[ext_resource type="Curve" uid="uid://bnte7a6roxnlq" path="res://Test/Curves/back_tires_curve   .tres" id="5_uwbbr"]
+[ext_resource type="Curve" uid="uid://b02ul4c55u1bp" path="res://Test/Curves/front_tires_curve   .tres" id="4_4g4y8"]
+[ext_resource type="Curve" uid="uid://bnte7a6roxnlq" path="res://Test/Curves/back_tires_curve   .tres" id="5_2h0f2"]
 [ext_resource type="Script" uid="uid://bbodqryclsm05" path="res://Test/camera.gd" id="6_kjm05"]
 [ext_resource type="Script" uid="uid://2evq66kdhsge" path="res://Test/top_view_camera.gd" id="7_hv5r1"]
 [ext_resource type="AudioStream" uid="uid://bcvnx3lynjjla" path="res://Test/Audio/ENGINE.mp3" id="8_x6v1c"]
@@ -12,33 +12,6 @@
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_7lm3j"]
 friction = 0.0
-
-[sub_resource type="Curve" id="Curve_kkwsn"]
-_data = [Vector2(0, 0.3), 0.0, 0.0, 0, 0, Vector2(0.3, 0.90000004), 0.0, 0.0, 0, 0, Vector2(0.5, 0.8), 0.0, 0.0, 0, 0, Vector2(0.7, 0.5), 0.0, 0.0, 0, 0, Vector2(0.90000004, 0.3), 0.0, 0.0, 0, 0, Vector2(0.99999, 0.1), 0.0, 0.0, 0, 0, Vector2(1, 0.5), 0.0, 0.0, 0, 0]
-point_count = 7
-metadata/_snap_enabled = true
-
-[sub_resource type="BoxMesh" id="BoxMesh_71byp"]
-size = Vector3(2, 0.5, 4)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kkwsn"]
-albedo_texture = ExtResource("2_2h0f2")
-uv1_triplanar = true
-uv1_triplanar_sharpness = 150.0
-
-[sub_resource type="BoxMesh" id="BoxMesh_xxig4"]
-size = Vector3(1, 0.4248047, 1.8754883)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a3jee"]
-albedo_texture = ExtResource("2_2h0f2")
-uv1_scale = Vector3(11.64, 11.64, 11.64)
-uv1_triplanar = true
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_ikn7k"]
-size = Vector3(1, 0.4248047, 1.8754883)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_p7s8d"]
-size = Vector3(2, 0.5, 2.3521729)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7sjgs"]
 resource_name = "Tires.002"
@@ -175,20 +148,6 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_in2cq")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tx45o"]
-albedo_color = Color(0, 0, 0, 1)
-uv1_scale = Vector3(-1.115, -1.115, -1.115)
-uv1_offset = Vector3(-0.555, 2.1, 0.5)
-uv1_triplanar = true
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_tsrje"]
-top_radius = 0.4
-bottom_radius = 0.4
-height = 0.1
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_tsrje"]
-radius = 0.25
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g610t"]
 resource_name = "Tires.002"
@@ -358,7 +317,7 @@ shadow_color = Color(1, 0, 0, 1)
 resource_name = "Speed"
 script/source = "extends Label
 
-@export var car: RaycastCar
+@export var car: RayCastCar
 
 func _process(delta: float) -> void:
 	text = \"Speed: \" + str(round(int(car.linear_velocity.length())))
@@ -596,7 +555,7 @@ shadow_mesh = SubResource("ArrayMesh_ghrgb")
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_7lm3j"]
 points = PackedVector3Array(0.00330233, -0.004252753, 0.006907936, 0.011581695, 0.007130158, 0.00069917244, 0.011581695, 0.007130158, 0.00018115493, -0.015318136, 0.006094832, -0.00395873, 0.015205942, -0.0068410677, -0.0034407126, -0.014802701, -0.0068410677, -0.00395873, -0.014802701, 0.0050595063, 0.00173308, 0.010028908, 0.004541843, 0.0063899187, 0.015721377, 0.006612495, -0.0034407126, 0.015205942, -0.0063234046, 0.003285005, -0.013765349, -0.0068410677, 0.00069917244, -0.0039364407, 0.007130158, 0.0038030224, 0.015721377, 0.0055771694, 0.0038030224, 0.008479364, 0.007130158, -0.00395873, -0.0008308687, 0.004541843, 0.0063899187, -0.014802701, -0.0052866605, 0.00173308, 0.008479364, -0.007358731, -0.00395873, -0.0039364407, -0.0068410677, 0.0038030224, 0.016758729, -0.0052866605, -0.0013707702, 0.0126190465, -0.0037365085, 0.005872965, -0.014284025, 0.007130158, -0.0018887876, -0.01635873, -0.0032174273, 0.00018115493, -0.0008308687, -0.004252753, 0.0063899187, -0.014284025, -0.007358731, -0.0008538163, 0.016240053, -0.0032174273, 0.0038030224, 0.016758729, 0.0050595063, -0.00033579883, -0.01635873, 0.003507936, -0.00395873, 0.008479364, -0.007358731, -0.0013707702, 0.015205942, 0.006612495, 0.0027680513, 0.006926578, 0.004541843, 0.006907936, 0.007960688, -0.004252753, 0.006907936, -0.01635873, 0.003507936, 0.00018115493)
 
-[node name="Car" type="RigidBody3D" unique_id=1623989013 node_paths=PackedStringArray("wheels", "wheel_fl", "wheel_fr", "wheel_bl", "wheel_br", "skid_marks", "engine_audio", "skid_audio")]
+[node name="Car" type="RigidBody3D" unique_id=1623989013 node_paths=PackedStringArray("wheels", "skid_marks")]
 mass = 50.0
 physics_material_override = SubResource("PhysicsMaterial_7lm3j")
 center_of_mass_mode = 1
@@ -605,182 +564,103 @@ continuous_cd = true
 linear_damp_mode = 1
 angular_damp_mode = 1
 script = ExtResource("1_4g4y8")
-wheels = [NodePath("WheelFL"), NodePath("WheelBL"), NodePath("WheelFR"), NodePath("WheelBR")]
-wheel_fl = NodePath("WheelFL")
-wheel_fr = NodePath("WheelFR")
-wheel_bl = NodePath("WheelBL")
-wheel_br = NodePath("WheelBR")
-acceleration = 1000.0
-max_speed = 60.0
-use_projected_force = false
-accel_curve = SubResource("Curve_kkwsn")
-mass_center = 0.5
+wheels = [NodePath("WheelFL"), NodePath("WheelFR"), NodePath("WheelBL"), NodePath("WheelBR")]
 skid_marks = [NodePath("SkidMarks/FL"), NodePath("SkidMarks/FR"), NodePath("SkidMarks/BL"), NodePath("SkidMarks/BR")]
-engine_audio = NodePath("AudioContainer/EngineAudio")
-skid_audio = NodePath("AudioContainer/SkidAudio")
-enable_debug = true
-show_speed_ray = true
+max_speed = 2000.0
+accel_curve = ExtResource("2_4g4y8")
+debug = true
+show_velocity_ray = true
 
-[node name="Car" type="MeshInstance3D" parent="." unique_id=1095269197]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1365814, 0)
-visible = false
-mesh = SubResource("BoxMesh_71byp")
-surface_material_override/0 = SubResource("StandardMaterial3D_kkwsn")
-
-[node name="Hood" type="MeshInstance3D" parent="Car" unique_id=977475285]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.43920004, 1.0388703)
-mesh = SubResource("BoxMesh_xxig4")
-surface_material_override/0 = SubResource("StandardMaterial3D_a3jee")
-
-[node name="Hood" type="CollisionShape3D" parent="." unique_id=1157099619]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5757818, 1.0388699)
-shape = SubResource("BoxShape3D_ikn7k")
-disabled = true
-
-[node name="Shape" type="CollisionShape3D" parent="." unique_id=256162567]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3267586, 0.14337158)
-shape = SubResource("BoxShape3D_p7s8d")
-disabled = true
-debug_color = Color(1, 0, 0, 1)
-
-[node name="WheelFL" type="RayCast3D" parent="." unique_id=32944142 node_paths=PackedStringArray("mesh", "shapecast", "car")]
+[node name="WheelFL" type="RayCast3D" parent="." unique_id=32944142 node_paths=PackedStringArray("car")]
 process_physics_priority = -1
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.60656965, 0.95556915, -1.0178249)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 1, -1)
 script = ExtResource("3_u0qaw")
 rest_dist = 0.15
+over_extend = 0.2
 wheel_radius = 0.23
-over_extend = 0.1
-z_traction = 0.2
+z_traction = 0.01
 use_as_steering = true
-mesh = NodePath("Cylinder")
-shapecast = NodePath("Shape")
+use_responsive_steering = true
+grip_curve = ExtResource("4_4g4y8")
 car = NodePath("..")
-grip_curve = ExtResource("4_gqsk6")
-enable_debug = true
-show_accel_rays = true
+debug = true
 show_steer_rays = true
+show_accel_rays = true
+show_friction_rays = true
+show_suspension_rays = true
 
 [node name="Cylinder" type="MeshInstance3D" parent="WheelFL" unique_id=168989669]
-transform = Transform3D(-3.4652148e-13, 4.5216375e-06, -9.702957, -23.222755, -2.7683684e-06, -2.0683097e-13, -4.1525527e-06, 23.222755, 1.8892354e-06, 0, 0, 0)
+transform = Transform3D(4.437138e-14, -1.0150989e-06, -9.702957, -23.222755, -1.0150989e-06, 0, -1.0150989e-06, 23.222755, -4.2412972e-07, 0, 0, 0)
 mesh = SubResource("ArrayMesh_cv22m")
 
-[node name="Mesh" type="MeshInstance3D" parent="WheelFL" unique_id=944475570]
-transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 0, -0.5, 0)
-visible = false
-material_override = SubResource("StandardMaterial3D_tx45o")
-mesh = SubResource("CylinderMesh_tsrje")
-
-[node name="Shape" type="ShapeCast3D" parent="WheelFL" unique_id=1485645034]
+[node name="WheelFR" type="RayCast3D" parent="." unique_id=1394364649 node_paths=PackedStringArray("car")]
 process_physics_priority = -1
-shape = SubResource("SphereShape3D_tsrje")
-target_position = Vector3(0, 0, 0)
-max_results = 3
-debug_shape_custom_color = Color(0, 1, 1, 1)
-
-[node name="WheelFR" type="RayCast3D" parent="." unique_id=1394364649 node_paths=PackedStringArray("mesh", "shapecast", "car")]
-process_physics_priority = -1
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.62143254, 0.95556915, -1.0274436)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 1, -1)
 script = ExtResource("3_u0qaw")
 rest_dist = 0.15
+over_extend = 0.2
 wheel_radius = 0.23
-over_extend = 0.1
-z_traction = 0.2
+z_traction = 0.01
 use_as_steering = true
-mesh = NodePath("Cylinder")
-shapecast = NodePath("Shape")
+use_responsive_steering = true
+grip_curve = ExtResource("4_4g4y8")
 car = NodePath("..")
-grip_curve = ExtResource("4_gqsk6")
-enable_debug = true
-show_accel_rays = true
+debug = true
 show_steer_rays = true
+show_accel_rays = true
+show_friction_rays = true
+show_suspension_rays = true
 
 [node name="Cylinder" type="MeshInstance3D" parent="WheelFR" unique_id=1360839715]
-transform = Transform3D(-9.901004e-14, 1.1368684e-13, 9.702957, -23.222755, 4.1525527e-06, -3.447183e-14, -4.1525527e-06, -23.222755, 0, 0, 0, 0)
+transform = Transform3D(4.437138e-14, -1.0150989e-06, 9.702957, -23.222755, -1.0150989e-06, 0, 1.0150989e-06, -23.222755, -4.2412972e-07, 0, 0, 0)
 mesh = SubResource("ArrayMesh_4ucos")
 
-[node name="Mesh" type="MeshInstance3D" parent="WheelFR" unique_id=2069183107]
-transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 0, -0.5, 0)
-visible = false
-material_override = SubResource("StandardMaterial3D_tx45o")
-mesh = SubResource("CylinderMesh_tsrje")
-
-[node name="Shape" type="ShapeCast3D" parent="WheelFR" unique_id=2031797757]
+[node name="WheelBL" type="RayCast3D" parent="." unique_id=1463527595 node_paths=PackedStringArray("car")]
 process_physics_priority = -1
-shape = SubResource("SphereShape3D_tsrje")
-target_position = Vector3(0, 0, 0)
-max_results = 3
-debug_shape_custom_color = Color(0, 1, 1, 1)
-
-[node name="WheelBL" type="RayCast3D" parent="." unique_id=1463527595 node_paths=PackedStringArray("mesh", "shapecast", "car")]
-process_physics_priority = -1
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.60656965, 0.95556915, 1.0683576)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 1, 1.07)
 script = ExtResource("3_u0qaw")
 rest_dist = 0.15
+over_extend = 0.2
 wheel_radius = 0.23
-over_extend = 0.1
-z_traction = 0.2
+z_traction = 0.01
 use_as_traction = true
-mesh = NodePath("Cylinder")
-shapecast = NodePath("Shape")
+use_responsive_steering = true
+grip_curve = ExtResource("5_2h0f2")
 car = NodePath("..")
-grip_curve = ExtResource("5_uwbbr")
-enable_debug = true
-show_accel_rays = true
+debug = true
 show_steer_rays = true
-
-[node name="Mesh" type="MeshInstance3D" parent="WheelBL" unique_id=1524887304]
-transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 0, -0.5, 0)
-visible = false
-material_override = SubResource("StandardMaterial3D_tx45o")
-mesh = SubResource("CylinderMesh_tsrje")
-
-[node name="Shape" type="ShapeCast3D" parent="WheelBL" unique_id=462264772]
-process_physics_priority = -1
-shape = SubResource("SphereShape3D_tsrje")
-target_position = Vector3(0, 0, 0)
-max_results = 3
-debug_shape_custom_color = Color(0, 1, 1, 1)
+show_accel_rays = true
+show_friction_rays = true
+show_suspension_rays = true
 
 [node name="Cylinder" type="MeshInstance3D" parent="WheelBL" unique_id=86503547]
-transform = Transform3D(-4.12519e-14, 2.8144466e-06, -9.702957, -23.222755, -2.7683684e-06, -2.0683097e-13, -4.1525527e-06, 23.222755, 1.175935e-06, 0, 0, 0)
+transform = Transform3D(4.437138e-14, 1.0150989e-06, -9.702957, 23.222755, -1.0150989e-06, 0, -1.0150989e-06, -23.222755, -4.2412972e-07, 0, 0, 0)
 mesh = SubResource("ArrayMesh_cv22m")
 
-[node name="WheelBR" type="RayCast3D" parent="." unique_id=1018043911 node_paths=PackedStringArray("mesh", "shapecast", "car")]
+[node name="WheelBR" type="RayCast3D" parent="." unique_id=1018043911 node_paths=PackedStringArray("car")]
 process_physics_priority = -1
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5815799, 0.95556915, 1.0621543)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 1, 1.07)
 script = ExtResource("3_u0qaw")
 rest_dist = 0.15
+over_extend = 0.2
 wheel_radius = 0.23
-over_extend = 0.1
-z_traction = 0.2
+z_traction = 0.01
 use_as_traction = true
-mesh = NodePath("Cylinder")
-shapecast = NodePath("Shape")
+use_responsive_steering = true
+grip_curve = ExtResource("5_2h0f2")
 car = NodePath("..")
-grip_curve = ExtResource("5_uwbbr")
-enable_debug = true
-show_accel_rays = true
+debug = true
 show_steer_rays = true
-
-[node name="Mesh" type="MeshInstance3D" parent="WheelBR" unique_id=523898061]
-transform = Transform3D(-4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0, 1, 0, -0.5, 0)
-visible = false
-material_override = SubResource("StandardMaterial3D_tx45o")
-mesh = SubResource("CylinderMesh_tsrje")
-
-[node name="Shape" type="ShapeCast3D" parent="WheelBR" unique_id=1091776961]
-process_physics_priority = -1
-shape = SubResource("SphereShape3D_tsrje")
-target_position = Vector3(0, 0, 0)
-max_results = 3
-debug_shape_custom_color = Color(0, 1, 1, 1)
+show_accel_rays = true
+show_friction_rays = true
+show_suspension_rays = true
 
 [node name="Cylinder" type="MeshInstance3D" parent="WheelBR" unique_id=1649686556]
-transform = Transform3D(-9.901004e-14, 1.1368684e-13, 9.702957, -23.222755, 4.1525527e-06, -3.447183e-14, -4.1525527e-06, -23.222755, 0, 0, 0, 0)
+transform = Transform3D(4.437138e-14, 1.0150989e-06, 9.702957, 23.222755, -1.0150989e-06, 0, 1.0150989e-06, 23.222755, -4.2412972e-07, 0, 0, 0)
 mesh = SubResource("ArrayMesh_4ucos")
 
 [node name="Pivot" type="Node3D" parent="." unique_id=266026944]
-transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 0, 0, 0)
+transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 0, 0.055571675, 0)
 
 [node name="Camera" type="Camera3D" parent="Pivot" unique_id=1923445959 node_paths=PackedStringArray("target", "pivot", "side_cam")]
 transform = Transform3D(0.8910053, 0.1611837, -0.4244166, 0, 0.9348528, 0.35503566, 0.45399302, -0.31633863, 0.8329587, -1.7324106, 2.3179018, 3.7410717)
@@ -788,12 +668,15 @@ top_level = true
 visible = false
 current = true
 script = ExtResource("6_kjm05")
+min_distance = 3.0
+max_distance = 6.0
+height = 2.5
 target = NodePath("../..")
 pivot = NodePath("..")
-side_cam = NodePath("../../Camera3D")
+side_cam = NodePath("../../Camera")
 
 [node name="SkidMarks" type="Node3D" parent="." unique_id=231769503]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6068115, -9.725318, -14.704102)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6068115, -9.669746, -14.704102)
 
 [node name="FL" type="CPUParticles3D" parent="SkidMarks" unique_id=381450274]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5310605, 9.928672, 13.517572)
@@ -854,7 +737,6 @@ script = ExtResource("7_hv5r1")
 target = NodePath("../../..")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1638412109]
-visible = false
 
 [node name="Label" type="Label" parent="CanvasLayer" unique_id=1981186267 node_paths=PackedStringArray("car")]
 anchors_preset = 1
@@ -875,21 +757,22 @@ vertical_alignment = 1
 script = SubResource("GDScript_tsrje")
 car = NodePath("../..")
 
-[node name="Cube" type="MeshInstance3D" parent="." unique_id=1814108407]
-transform = Transform3D(3.6239624e-05, 100, -1.192093e-05, 0, 5.9604654e-06, 100.000015, 100, -3.6239624e-05, 2.728484e-12, 0, 1.1551716, 0)
+[node name="Mesh" type="MeshInstance3D" parent="." unique_id=1814108407]
+transform = Transform3D(3.6239624e-05, 100, -1.192093e-05, 0, 5.9604654e-06, 100.000015, 100, -3.6239624e-05, 2.728484e-12, 0, 1.2107433, 0)
 mesh = SubResource("ArrayMesh_57g0f")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=295951520]
-transform = Transform3D(3.1391646e-05, 100, 4.371139e-06, 0, -4.371139e-06, 100, 100, -3.1391646e-05, -1.3721724e-12, 0, 1.3085563, 0)
+[node name="Collision" type="CollisionShape3D" parent="." unique_id=295951520]
+transform = Transform3D(3.1391646e-05, 100, 4.371139e-06, 0, -4.371139e-06, 100, 100, -3.1391646e-05, -1.3721724e-12, 0, 1.364128, 0)
 shape = SubResource("ConvexPolygonShape3D_7lm3j")
 debug_color = Color(1, 1, 0, 1)
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=1616836782]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5.7853255, 1.5380461, -0.012518138)
+[node name="Camera" type="Camera3D" parent="." unique_id=1616836782]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5.7853255, 1.5936178, -0.012518138)
 fov = 37.5
 size = 2.76
 
 [node name="AudioContainer" type="Node3D" parent="." unique_id=1612546203]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2671152, 0)
 
 [node name="EngineAudio" type="AudioStreamPlayer3D" parent="AudioContainer" unique_id=1085712533]
 stream = ExtResource("8_x6v1c")

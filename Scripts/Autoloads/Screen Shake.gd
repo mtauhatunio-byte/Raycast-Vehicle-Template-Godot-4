@@ -6,7 +6,7 @@ var shake_strength: float = 0.0
 var shake_fade: float = 5.0
 
 const ball_scene: PackedScene = preload("res://Scenes/Test/test.tscn")
-const susp_scene: PackedScene = preload("res://Scenes/Test/suspension_test.tscn")
+const suspension_scene: PackedScene = preload("res://Scenes/Test/suspension_test.tscn")
 
 # Max structural limits for the camera to read
 var max_shake_offset := Vector3(0.5, 0.5, 0.0)
@@ -28,7 +28,7 @@ func _process(delta: float) -> void:
 			1: 
 				get_tree().change_scene_to_packed(ball_scene)
 			2:
-				get_tree().change_scene_to_packed(susp_scene)
+				get_tree().change_scene_to_packed(suspension_scene)
 			_:
 				pass
 				

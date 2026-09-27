@@ -3,7 +3,21 @@
 [ext_resource type="Texture2D" uid="uid://gtvb7na7xelj" path="res://Terrain/Textures/grass03.png" id="1_6l3k4"]
 [ext_resource type="Image" uid="uid://co13feb2frd1f" path="res://Test/Tracks/Track/Heightmap_0_0.res" id="2_p0fjp"]
 [ext_resource type="Image" uid="uid://7egu6berk34p" path="res://Test/Tracks/Track/Splatmap_0_0_0.res" id="3_p8a82"]
-[ext_resource type="PackedScene" uid="uid://bf1wyrvuqkkft" path="res://Test/car.scn" id="4_p0fjp"]
+[ext_resource type="PackedScene" uid="uid://brrregeexlw0e" path="res://Test/car.tscn" id="4_p0fjp"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_p0fjp"]
+sky_top_color = Color(0.48190933, 0.55606246, 0.655029, 1)
+sky_horizon_color = Color(0.77684295, 0.78735054, 0.80305785, 1)
+ground_bottom_color = Color(0.20628533, 0.1741626, 0.13802531, 1)
+ground_horizon_color = Color(0.77684295, 0.78735054, 0.80305785, 1)
+
+[sub_resource type="Sky" id="Sky_p8a82"]
+sky_material = SubResource("ProceduralSkyMaterial_p0fjp")
+
+[sub_resource type="Environment" id="Environment_em8cy"]
+background_mode = 2
+sky = SubResource("Sky_p8a82")
+glow_enabled = true
 
 [sub_resource type="TextureSetResource" id="TextureSetResource_ucvmw"]
 albedoTexture = ExtResource("1_6l3k4")
@@ -27,6 +41,13 @@ _data = {
 point_count = 28
 
 [node name="Track" type="Node3D" unique_id=981490989]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1406351897]
+environment = SubResource("Environment_em8cy")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=122732762]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
 
 [node name="TerraBrush" type="TerraBrush" parent="." unique_id=1564294651]
 dataPath = "res://Test/Tracks/Track"
@@ -53,5 +74,5 @@ path_continuous_u = true
 path_u_distance = 1.0
 path_joined = false
 
-[node name="Car" parent="." unique_id=1623989013 instance=ExtResource("4_p0fjp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 185.96057)
+[node name="Car2" parent="." unique_id=1623989013 instance=ExtResource("4_p0fjp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 18.41323, 107.45912)

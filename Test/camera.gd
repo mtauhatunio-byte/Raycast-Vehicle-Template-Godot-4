@@ -16,7 +16,7 @@ class_name CameraFollow extends Camera3D
 var current_cam: int = 0
 
 func _ready() -> void:
-	pass
+	set_process(true)
 
 
 func _unhandled_input(event: InputEvent) -> void:

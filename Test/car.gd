@@ -1,156 +1,170 @@
-class_name RaycastCar extends RigidBody3D
+class_name RayCastCar extends RigidBody3D
 
 #region @export Variables
-@export_group("Wheels")
-@export var wheels: Array[RaycastWheel] = []
-@export var wheel_fl: RaycastWheel
-@export var wheel_fr: RaycastWheel
-@export var wheel_bl: RaycastWheel
-@export var wheel_br: RaycastWheel
+@export_group("Arrays")
+@export var wheels : Array[RaycastWheel] = []
+@export var skid_marks : Array[CPUParticles3D] = []
 
 @export_group("Engine")
-@export var acceleration: float = 300.0
-@export var max_speed: float = 20.0
-@export var use_projected_force: bool = true
-@export var accel_curve: Curve
-
-@export_group("Physics")
-@export var mass_center: float
+@export var acceleration : float = 600.0
+@export var max_speed : float = 20.0
+@export var accel_curve : Curve = null
 
 @export_group("Steering")
-@export_subgroup("Turning")
-@export var tire_turn_speed: float = 2.0
-@export var tire_turn_max_degress: float = 25.0
-
-@export_group("Skid Marks")
-@export var skid_marks: Array[CPUParticles3D] = []
-
-@export_group("Audio Nodes")
-@export var engine_audio: AudioStreamPlayer3D
-@export var skid_audio: AudioStreamPlayer3D
+@export var tire_turn_speed : float = 2.0
+@export var tire_max_turn_degrees : float = 25.0
 
 @export_group("Debug")
-@export_custom(PROPERTY_HINT_GROUP_ENABLE, "") var enable_debug: bool = false
-@export var show_speed_ray: bool = false
+@export_custom(PROPERTY_HINT_GROUP_ENABLE, "") var debug : bool = false
+@export var show_velocity_ray : bool = false
+#endregion
+
+
+#region @onready Variables
+@onready var total_wheels : int = wheels.size()
 #endregion
 
 
 #region Member Variables
-var motor_input: float = 0
-var turn_input: float = 0
-var speed: float = 0.0
-var grounded: bool = false
-var braking: bool = false
-var handbreak: bool = false
-var slipping: bool = false
-
-var forward: Vector3
-var right: Vector3
-var forward_speed: float
-var side_speed: float
-
+var motor_input : float = 0
+var turn_input : float = 0.0
+var handbrake : bool = false
+var slipping : bool = false
+var grounded : bool = false
 #endregion
 
 
-func _unhandled_input(event: InputEvent) -> void:
-	
-	#if event.is_action_pressed("Handbrake"):
-		#handbreak = true
-		#slipping = true
-	#elif event.is_action_released("Handbrake"):
-		#handbreak = false
-	#
-	#if event.is_action_pressed("Forward"):
-		#motor_input = Input.get_action_strength("Forward")
-	#elif event.is_action_released("Forward"):
-		#motor_input = 0
-	#
-	#if event.is_action_pressed("Backward"):
-		#motor_input = -Input.get_action_strength("Backward")
-	#elif event.is_action_released("Backward"):
-		#motor_input = 0
-
-	
-	pass
+func _ready() -> void:
+	calculate_center_of_mass(false)
 
 
-func _physics_process(delta: float) -> void:
+func calculate_center_of_mass(calculate : bool) -> void:
+	if not calculate: return
 	
-		
-	handbreak = Input.is_action_pressed("Handbrake")
-	if handbreak:
+	center_of_mass_mode = RigidBody3D.CENTER_OF_MASS_MODE_AUTO
+	
+	var auto_com : Vector3 = center_of_mass
+	
+	center_of_mass_mode = RigidBody3D.CENTER_OF_MASS_MODE_CUSTOM
+	
+	center_of_mass = Vector3(auto_com.x, -0.3, auto_com.z)
+
+
+func get_point_velocity(point : Vector3) -> Vector3:
+	var speed : Vector3 = linear_velocity
+	var angular : Vector3 = angular_velocity
+	var center : Vector3 = to_global(center_of_mass)
+	var cross : Vector3 = angular.cross(point - center)
+	var return_value : Vector3 = speed + cross
+	
+	return return_value
+
+
+func _unhandled_input(event : InputEvent) -> void:
+	if event.is_action_pressed("Handbrake"):
+		handbrake = true
 		slipping = true
-		
-		
-	
-	motor_input = Input.get_action_strength("Forward") - Input.get_action_strength("Backward")
-	
-	if show_speed_ray and OS.is_debug_build():
-		DebugDraw3D.draw_arrow_ray(global_position + Vector3(0, 1, 0), linear_velocity, 1.0, Color.PINK, 0.1)
-		
-	if engine_audio:
-		if not engine_audio.playing:
-			engine_audio.play()
-			
-	if handbreak:
-		if not skid_audio.playing:
-			skid_audio.play()
-	else:
-		skid_audio.stop()
-	
-	forward = -global_basis.z
-	right = -global_basis.x
-	
-	forward_speed = forward.dot(linear_velocity)
-	side_speed = absf(right.dot(linear_velocity))
-	
-	grounded = false
-	var id: int = 0
-	
-	for wheel in wheels: 
-		if wheel.is_colliding(): grounded = true
-		wheel.simulate_wheels(self)
-		wheel_rotation(wheel, delta)
-		
-		skid_marks[id].global_position = wheel.get_collision_point() + Vector3.UP * 0.01
-		skid_marks[id].look_at(skid_marks[id].global_position + global_basis.z)
-		
-		if not handbreak and wheel.grip_factor < 0.2:
-			slipping = false
-			skid_marks[id].emitting = false
-			
-		if handbreak and not skid_marks[id].emitting:
-			skid_marks[id].emitting = true
-			
-		if wheel.is_colliding():
-			grounded = true
-		
-		id += 1
-		
+	elif event.is_action_released("Handbrake"):
+		handbrake = false
 		
 	
-	speed = linear_velocity.length()
+	if event.is_action_pressed("Forward"):
+		motor_input = 1.0
+	elif event.is_action_released("Forward"):
+		motor_input = 0.0
+	
+	
+	if event.is_action_pressed("Backward"):
+		motor_input = -1.0
+	elif event.is_action_released("Backward"):
+		motor_input = 0.0
+		
+	turn_input = Input.get_axis("Right", "Left")
 
 
-func wheel_rotation(wheel: RaycastWheel, delta: float) -> void:
+func wheel_rotation(wheel : RaycastWheel, delta : float) -> void: 
 	if not wheel.use_as_steering: return
 	
-	turn_input = Input.get_action_strength("Left") - Input.get_action_strength("Right")
+	if turn_input != 0.0:
+		wheel.rotation.y = clampf(
+			wheel.rotation.y + turn_input * delta,
+			deg_to_rad(-tire_max_turn_degrees),
+			deg_to_rad(+tire_max_turn_degrees),
+		)
+	else:
+		wheel.rotation.y = move_toward(
+			wheel.rotation.y,
+			0.0,
+			tire_turn_speed * delta
+		)
+
+
+func _physics_process(delta : float) -> void:
+	# Keep track of the wheel index so we map each wheel to its own separate skid mark
+	for i: int in range(wheels.size()):
+		var wheel: RaycastWheel = wheels[i]
+		wheel.simulate_wheels()
+		
+		# Only update drift marks if the wheel is actually touching the ground
+		if wheel.is_colliding():
+			drift_marks(wheel, i)
+		else:
+			# Safety turn-off if airborne
+			if i < skid_marks.size():
+				skid_marks[i].emitting = false
+				
+		check_ground_collision(wheel)
+		wheel_rotation(wheel, delta)
+		
+		if Input.is_action_just_pressed("Change"):
+			wheel.use_responsive_steering = !wheel.use_responsive_steering
+
+
+func drift_marks(wheel : RaycastWheel, id : int) -> void:
+	# Out of bounds check to prevent runtime crashes
+	if id >= skid_marks.size(): return
 	
-	# Turn input (-1.0 to 1.0) multiplied by max degrees tells us exactly where the wheels SHOULD point
-	var target_rotation: float = turn_input * deg_to_rad(tire_turn_max_degress)
+	var mark : CPUParticles3D = skid_marks[id]
 	
-	# Smoothly interpolate the wheel mesh toward that exact target position
-	wheel.rotation.y = lerpf(
-		wheel.rotation.y,
-		target_rotation,
-		tire_turn_speed * delta
-	)
+	# IMPORTANT: Go to your CPUParticles3D settings in the Godot Inspector!
+	# Ensure "Disable Collision" is checked under the particle properties.
+	
+	mark.global_position = wheel.get_collision_point() + Vector3.UP * 0.02
+	
+	# Safe guard look_at to ensure it isn't completely vertical or pointing at zero length vectors
+	var look_target: Vector3 = mark.global_position + get_forward()
+	if not mark.global_position.is_equal_approx(look_target):
+		mark.look_at(look_target)
+	
+	# Simplified drift emission control logic
+	if handbrake or wheel.grip_factor > 0.6: # Tweak threshold based on your wheel logic
+		mark.emitting = true
+	else:
+		mark.emitting = false
 
 
-func get_point_velocity(point: Vector3) -> Vector3:
-	return linear_velocity + angular_velocity.cross(point - to_global(center_of_mass))
+func check_ground_collision(wheel : RaycastWheel) -> void:
+	if wheel.is_colliding():
+		grounded = true
 
 
-func get_sideways_velocity() -> float:
-	return -global_basis.x.dot(linear_velocity)
+func get_forward() -> Vector3:
+	return -global_basis.z
+
+
+func get_right() -> Vector3:
+	return global_basis.x
+
+
+func get_forward_velocity() -> float:
+	return get_forward().dot(linear_velocity)
+
+
+func get_right_velocity() -> float:
+	return get_right().dot(linear_velocity)
+
+
+func debug_arrows() -> void:
+	if debug and OS.is_debug_build():
+		if show_velocity_ray:
+			DebugDraw3D.draw_arrow_ray(global_position, linear_velocity, 10, Color.ORANGE)
