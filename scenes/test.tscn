@@ -1,0 +1,80 @@
+[gd_scene format=3 uid="uid://d3w2a1sn4d8m"]
+
+[ext_resource type="Shader" uid="uid://kl1e0bihuwt0" path="res://Shaders/sky/Scrolling_Sky.gdshader" id="1_ykrsh"]
+[ext_resource type="Texture2D" uid="uid://bpydg3nglrlar" path="res://Shaders/sky/skybox-day.png" id="2_g14j6"]
+[ext_resource type="Texture2D" uid="uid://dotbik1q6s2s6" path="res://Textures/Prototype/prototype_green.png" id="3_vbegm"]
+[ext_resource type="Texture2D" uid="uid://ou0niudnqdrt" path="res://Textures/Prototype/Prototype_Yellow.png" id="4_ehkex"]
+[ext_resource type="PackedScene" uid="uid://cc2i45h1wm0ef" path="res://cars/player_car/scenes/car.tscn" id="5_xersf"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_i3aeo"]
+shader = ExtResource("1_ykrsh")
+shader_parameter/panorama_texture = ExtResource("2_g14j6")
+shader_parameter/scroll_speed = 0.010000047974999982
+
+[sub_resource type="Sky" id="Sky_35xla"]
+sky_material = SubResource("ShaderMaterial_i3aeo")
+
+[sub_resource type="Environment" id="Environment_ys1qc"]
+background_mode = 2
+sky = SubResource("Sky_35xla")
+fog_enabled = true
+fog_mode = 1
+fog_density = 0.8
+fog_sky_affect = 0.8
+
+[sub_resource type="BoxMesh" id="BoxMesh_i5fng"]
+size = Vector3(1000, 1, 1000)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rj124"]
+albedo_texture = ExtResource("3_vbegm")
+uv1_triplanar = true
+texture_filter = 0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ys1qc"]
+size = Vector3(1000, 1, 1000)
+
+[sub_resource type="BoxMesh" id="BoxMesh_35xla"]
+size = Vector3(10, 1, 10)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i3aeo"]
+albedo_texture = ExtResource("4_ehkex")
+uv1_triplanar = true
+texture_filter = 0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5wyu1"]
+size = Vector3(10, 1, 10)
+
+[node name="Test" type="Node3D" unique_id=1001697064]
+
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=639982040]
+transform = Transform3D(0.86602545, -0.43301257, 0.24999984, 0.12940952, 0.67707705, 0.7244444, -0.48296282, -0.59503496, 0.64240193, 20.639101, 7.2277517, 0)
+shadow_enabled = true
+
+[node name="Environment" type="WorldEnvironment" parent="." unique_id=2109003749]
+environment = SubResource("Environment_ys1qc")
+
+[node name="Ground" type="StaticBody3D" parent="." unique_id=345175673]
+
+[node name="Mesh" type="MeshInstance3D" parent="Ground" unique_id=977972251]
+mesh = SubResource("BoxMesh_i5fng")
+surface_material_override/0 = SubResource("StandardMaterial3D_rj124")
+
+[node name="Collision" type="CollisionShape3D" parent="Ground" unique_id=64371346]
+shape = SubResource("BoxShape3D_ys1qc")
+
+[node name="Ramp" type="StaticBody3D" parent="." unique_id=1387412261]
+
+[node name="Mesh" type="MeshInstance3D" parent="Ramp" unique_id=1772445865]
+transform = Transform3D(0.8660254, 0.5, 0, -0.5, 0.8660254, 0, 0, 0, 1, 0, 2.006288, 0)
+mesh = SubResource("BoxMesh_35xla")
+surface_material_override/0 = SubResource("StandardMaterial3D_i3aeo")
+
+[node name="Collision" type="CollisionShape3D" parent="Ramp" unique_id=336414687]
+transform = Transform3D(0.8660254, 0.5, 0, -0.5, 0.8660254, 0, 0, 0, 1, 0, 2.006288, 0)
+shape = SubResource("BoxShape3D_5wyu1")
+
+[node name="Car" parent="." unique_id=1471651235 instance=ExtResource("5_xersf")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 10.221132, 2.508521, -2.13278)
+spring_strength = 5000.0
+spring_damping = 120.0
+rest_distance = 0.5

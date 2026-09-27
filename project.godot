@@ -11,17 +11,13 @@ config_version=5
 [application]
 
 config/name="Car go VROOOOOOOOOOOOOOOOOO,"
+run/main_scene="uid://d3w2a1sn4d8m"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [audio]
 
 buses/default_bus_layout="uid://q1ynybd7qt64"
-
-[autoload]
-
-ScreenShake="*uid://giygyar1ym47"
-NoiseGlobal="*uid://qymr48afk3m5"
 
 [debug]
 
@@ -47,8 +43,9 @@ enabled=PackedStringArray("res://addons/project-time-tracker/plugin.cfg")
 [file_customization]
 
 folder_colors={
-"res://Cars/": "red",
-"res://Shaders/": "purple"
+"res://Shaders/": "purple",
+"res://cars/": "red",
+"res://scenes/": "orange"
 }
 
 [filesystem]

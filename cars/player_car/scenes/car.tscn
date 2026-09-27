@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://cc2i45h1wm0ef"]
+
+[ext_resource type="Texture2D" uid="uid://hm3muby3jb6b" path="res://Textures/Prototype/red_prototype_texture.png" id="1_15ccg"]
+[ext_resource type="Script" uid="uid://c0dn4fbkjpr4o" path="res://cars/player_car/scripts/car.gd" id="1_nkaj5"]
+[ext_resource type="Texture2D" uid="uid://crt60hvoyp320" path="res://Textures/Prototype/blue_prototype_texture.png" id="2_nkaj5"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_tsrje"]
+size = Vector3(2, 0.5, 4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lur3q"]
+albedo_texture = ExtResource("1_15ccg")
+uv1_triplanar = true
+texture_filter = 0
+
+[sub_resource type="BoxMesh" id="BoxMesh_uc3pe"]
+size = Vector3(0.65, 0.4, 1.8)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gik3o"]
+albedo_texture = ExtResource("2_nkaj5")
+uv1_triplanar = true
+texture_filter = 0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0qcxw"]
+size = Vector3(2, 0.5, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_15ccg"]
+size = Vector3(0.65, 0.4, 1.8)
+
+[node name="Car" type="RigidBody3D" unique_id=1471651235]
+script = ExtResource("1_nkaj5")
+spring_strength = null
+spring_damping = null
+rest_distance = null
+
+[node name="Body" type="MeshInstance3D" parent="." unique_id=2007795893]
+mesh = SubResource("BoxMesh_tsrje")
+surface_material_override/0 = SubResource("StandardMaterial3D_lur3q")
+
+[node name="Hood" type="MeshInstance3D" parent="Body" unique_id=756520693]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00082455575, 0.4321335, 1.101037)
+mesh = SubResource("BoxMesh_uc3pe")
+surface_material_override/0 = SubResource("StandardMaterial3D_gik3o")
+
+[node name="BodyShape" type="CollisionShape3D" parent="." unique_id=14038278]
+shape = SubResource("BoxShape3D_0qcxw")
+debug_color = Color(1, 1, 0, 1)
+
+[node name="HoodShape" type="CollisionShape3D" parent="." unique_id=1462726359]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00082455575, 0.4321335, 1.101037)
+shape = SubResource("BoxShape3D_15ccg")
+
+[node name="WheelBR" type="RayCast3D" parent="." unique_id=784140645]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, 0, 1.3)
+
+[node name="WheelBL" type="RayCast3D" parent="." unique_id=213276356]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1, 0, 1.3)
+
+[node name="WheelFL" type="RayCast3D" parent="." unique_id=90766459]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1, 0, -1.3158655)
+
+[node name="WheelFR" type="RayCast3D" parent="." unique_id=870812174]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, 0, -1.3158655)
