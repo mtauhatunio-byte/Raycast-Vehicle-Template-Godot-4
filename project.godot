@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Car go VROOOOOOOOOOOOOOOOOO,"
+config/name="Leadline"
 run/main_scene="uid://d3w2a1sn4d8m"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
