@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://bilno4mr70rms"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4getv"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_kg0na"]
+size = Vector2(0.8, 0.6)
+orientation = 1
+
+[sub_resource type="Gradient" id="Gradient_18xap"]
+offsets = PackedFloat32Array(0, 0.30882353, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 0.6911765, 0, 0, 0, 0)
+
+[node name="DriftMarks" type="CPUParticles3D" unique_id=1179789824]
+material_override = SubResource("StandardMaterial3D_4getv")
+emitting = false
+amount = 150
+lifetime = 2.0
+randomness = 1.0
+fixed_fps = 60
+visibility_aabb = AABB(-4, -4, -4, 8, 8, 8)
+mesh = SubResource("QuadMesh_kg0na")
+gravity = Vector3(0, 0, 0)
+color_ramp = SubResource("Gradient_18xap")

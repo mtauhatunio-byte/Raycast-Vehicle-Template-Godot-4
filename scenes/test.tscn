@@ -4,7 +4,11 @@
 [ext_resource type="Texture2D" uid="uid://dotbik1q6s2s6" path="res://Textures/Prototype/prototype_green.png" id="2_j5jx5"]
 [ext_resource type="Texture2D" uid="uid://bpydg3nglrlar" path="res://Shaders/sky/skybox-day.png" id="2_lpvoh"]
 [ext_resource type="Texture2D" uid="uid://ou0niudnqdrt" path="res://Textures/Prototype/Prototype_Yellow.png" id="3_lpvoh"]
-[ext_resource type="PackedScene" uid="uid://cc2i45h1wm0ef" path="res://cars/player_car/scenes/car.tscn" id="5_at5dv"]
+[ext_resource type="PackedScene" uid="uid://b0mmyo1pdpej8" path="res://cars/player_car/custom_car/scenes/custom_car.tscn" id="5_j5jx5"]
+[ext_resource type="Script" uid="uid://cabppm3cppapl" path="res://cars/player_car/raycast_car/scripts/camera.gd" id="6_lpvoh"]
+[ext_resource type="LightmapGIData" uid="uid://br8svrhjexp3p" path="res://scenes/test.lmbake" id="7_at5dv"]
+[ext_resource type="PackedScene" uid="uid://cc2i45h1wm0ef" path="res://cars/player_car/raycast_car/scenes/car.tscn" id="8_jcd4p"]
+[ext_resource type="Script" uid="uid://b53vtvasf0338" path="res://cars/components/scripts/debug_camera.gd" id="9_uacia"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_i3aeo"]
 shader = ExtResource("1_j5jx5")
@@ -17,12 +21,17 @@ sky_material = SubResource("ShaderMaterial_i3aeo")
 [sub_resource type="Environment" id="Environment_ys1qc"]
 background_mode = 2
 sky = SubResource("Sky_35xla")
+glow_enabled = true
+glow_intensity = 8.0
+glow_bloom = 0.08
 fog_enabled = true
 fog_mode = 1
 fog_density = 0.8
 fog_sky_affect = 0.8
 
 [sub_resource type="BoxMesh" id="BoxMesh_i5fng"]
+lightmap_size_hint = Vector2i(10004, 5016)
+add_uv2 = true
 size = Vector3(1000, 1, 1000)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rj124"]
@@ -47,14 +56,35 @@ texture_filter = 0
 [sub_resource type="BoxShape3D" id="BoxShape3D_5wyu1"]
 size = Vector3(10, 1, 10)
 
+[sub_resource type="PrismMesh" id="PrismMesh_tsrje"]
+left_to_right = 0.1
+size = Vector3(22, 3, 31)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_jcd4p"]
+points = PackedVector3Array(10.999998, -1.5, 15.5, -8.801292, 1.5, 15.5, -11, -1.5, 15.5, 10.999998, -1.5, -15.5, -8.801292, 1.5, -15.5, -11, -1.5, -15.5)
+
 [node name="Test" type="Node3D" unique_id=1001697064]
 
+[node name="Car" parent="." unique_id=1471651235 instance=ExtResource("8_jcd4p")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 0.99999994, 0, -1, 0, -4.371139e-08, 22.56918, 11.287943, 5.734084)
+
 [node name="Sun" type="DirectionalLight3D" parent="." unique_id=639982040]
-transform = Transform3D(0.86602545, -0.43301257, 0.24999984, 0.12940952, 0.67707705, 0.7244444, -0.48296282, -0.59503496, 0.64240193, 20.639101, 7.2277517, 0)
-shadow_enabled = true
+transform = Transform3D(-0.77025723, 0.3958584, 0.49999997, 0.44470817, -0.22854891, 0.86602545, 0.4570979, 0.8894164, -1.3253338e-08, 711.8009, 315.70435, 0)
 
 [node name="Environment" type="WorldEnvironment" parent="." unique_id=2109003749]
 environment = SubResource("Environment_ys1qc")
+
+[node name="CustomCar" parent="." unique_id=174646252 instance=ExtResource("5_j5jx5")]
+transform = Transform3D(1.0000001, 0, 0, 0, 1.0000002, 0, 0, 0, 1.0000001, 22.56857, 10.853186, -4.886852)
+
+[node name="Node3D" type="Node3D" parent="CustomCar" unique_id=1708496425]
+
+[node name="FollowCamera" type="Camera3D" parent="CustomCar/Node3D" unique_id=1005351195 node_paths=PackedStringArray("target", "pivot")]
+transform = Transform3D(0.9983917, 0.02279151, -0.051909737, 0, 0.9156319, 0.4020177, 0.0566928, -0.40137115, 0.9141593, 0.21701336, 1.4696913, 5.024932)
+script = ExtResource("6_lpvoh")
+target = NodePath("../..")
+pivot = NodePath("..")
+metadata/_custom_type_script = "uid://cabppm3cppapl"
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=345175673]
 
@@ -76,10 +106,22 @@ surface_material_override/0 = SubResource("StandardMaterial3D_i3aeo")
 transform = Transform3D(0.8660254, 0.5, 0, -0.5, 0.8660254, 0, 0, 0, 1, 0, 2.006288, 0)
 shape = SubResource("BoxShape3D_5wyu1")
 
-[node name="Car" parent="." unique_id=1471651235 instance=ExtResource("5_at5dv")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 10.221132, 9.927867, -2.13278)
-spring_strength = 1500.0
-spring_damping = 41.0
+[node name="LightmapGI" type="LightmapGI" parent="." unique_id=408583660]
+quality = 0
+use_denoiser = false
+texel_scale = 0.01
+light_data = ExtResource("7_at5dv")
 
-[node name="Camera" type="Camera3D" parent="." unique_id=1888686789]
-transform = Transform3D(0.90814316, -0.11364113, 0.4029413, 0, 0.9624553, 0.2714403, -0.41865975, -0.24650665, 0.87404716, 12.88409, 4.3987155, 3.6562843)
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1624587951]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 85.47954, 2.4886475, 0)
+mesh = SubResource("PrismMesh_tsrje")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D" unique_id=1107560807]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D" unique_id=763331113]
+shape = SubResource("ConvexPolygonShape3D_jcd4p")
+
+[node name="EditorCameraController" type="Camera3D" parent="." unique_id=1841123248]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.65438, 8.857537, -7.525206)
+script = ExtResource("9_uacia")
+metadata/_custom_type_script = "uid://b53vtvasf0338"

@@ -1,0 +1,245 @@
+[gd_scene format=3 uid="uid://cc2i45h1wm0ef"]
+
+[ext_resource type="Texture2D" uid="uid://hm3muby3jb6b" path="res://Textures/Prototype/red_prototype_texture.png" id="1_15ccg"]
+[ext_resource type="Script" uid="uid://c0dn4fbkjpr4o" path="res://cars/player_car/raycast_car/scripts/car.gd" id="1_nkaj5"]
+[ext_resource type="Curve" uid="uid://bjllfy5nd8vhj" path="res://cars/player_car/raycast_car/resources/acceleration_curve.tres" id="2_00nse"]
+[ext_resource type="Texture2D" uid="uid://crt60hvoyp320" path="res://Textures/Prototype/blue_prototype_texture.png" id="2_nkaj5"]
+[ext_resource type="Script" uid="uid://carpfma6tnn25" path="res://cars/player_car/raycast_car/scripts/raycast_wheel.gd" id="4_w2c2i"]
+[ext_resource type="Texture2D" uid="uid://gxbjaxyvypkb" path="res://Textures/Prototype/black_prototype_texture.png" id="4_yjfjb"]
+[ext_resource type="Curve" uid="uid://b0khdhmajyklo" path="res://cars/player_car/raycast_car/resources/front_tires_grip_curve.tres" id="6_v41n5"]
+[ext_resource type="Script" uid="uid://cabppm3cppapl" path="res://cars/player_car/raycast_car/scripts/camera.gd" id="7_beu0x"]
+[ext_resource type="Curve" uid="uid://jh7f7pcb64mo" path="res://cars/player_car/raycast_car/resources/back_tires_grip_curve.tres" id="8_aawam"]
+[ext_resource type="PackedScene" uid="uid://cwchuogkwuqk5" path="res://cars/player_car/meshes/player_meshes/hot_rod.fbx" id="10_21h2q"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_00nse"]
+friction = 0.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_tsrje"]
+size = Vector3(2, 0.5, 4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lur3q"]
+albedo_texture = ExtResource("1_15ccg")
+uv1_triplanar = true
+texture_filter = 0
+
+[sub_resource type="BoxMesh" id="BoxMesh_uc3pe"]
+size = Vector3(0.65, 0.4, 1.8)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gik3o"]
+albedo_texture = ExtResource("2_nkaj5")
+uv1_triplanar = true
+texture_filter = 0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0qcxw"]
+size = Vector3(2, 0.5, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_15ccg"]
+size = Vector3(0.65, 0.4, 1.8)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_tsrje"]
+top_radius = 0.4
+bottom_radius = 0.4
+height = 0.15
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yjfjb"]
+albedo_texture = ExtResource("4_yjfjb")
+uv1_offset = Vector3(0.25, 0, 0.25)
+uv1_triplanar = true
+texture_filter = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_j5jx5"]
+font_size = 64
+font_color = Color(0, 0, 0, 1)
+outline_size = 29
+shadow_size = 128
+shadow_color = Color(0, 0, 0, 1)
+
+[sub_resource type="GDScript" id="GDScript_00nse"]
+resource_name = "speed"
+script/source = "extends Label
+
+var root : RayCastCar = null
+
+func _ready() -> void:
+	root = get_owner()
+
+
+
+func _process(delta: float) -> void:
+	if root:
+		text = \"Speed : \" + str(round(int(root.linear_velocity.length())))
+"
+
+[node name="Car" type="RigidBody3D" unique_id=1471651235 node_paths=PackedStringArray("wheels")]
+mass = 1200.0
+physics_material_override = SubResource("PhysicsMaterial_00nse")
+linear_damp_mode = 1
+script = ExtResource("1_nkaj5")
+wheels = [NodePath("WheelFL"), NodePath("WheelFR"), NodePath("WheelBL"), NodePath("WheelBR")]
+acceleration_curve = ExtResource("2_00nse")
+debug = true
+show_speed_ray = true
+show_center_of_mass = true
+
+[node name="Body" type="MeshInstance3D" parent="." unique_id=2007795893]
+mesh = SubResource("BoxMesh_tsrje")
+surface_material_override/0 = SubResource("StandardMaterial3D_lur3q")
+
+[node name="Hood" type="MeshInstance3D" parent="Body" unique_id=756520693]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00082455575, 0.4321335, 1.101037)
+mesh = SubResource("BoxMesh_uc3pe")
+surface_material_override/0 = SubResource("StandardMaterial3D_gik3o")
+
+[node name="BodyShape" type="CollisionShape3D" parent="." unique_id=14038278]
+shape = SubResource("BoxShape3D_0qcxw")
+debug_color = Color(1, 1, 0, 0)
+
+[node name="HoodShape" type="CollisionShape3D" parent="." unique_id=1462726359]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00082455575, 0.4321335, 1.101037)
+shape = SubResource("BoxShape3D_15ccg")
+debug_color = Color(1, 1, 0, 0)
+
+[node name="WheelFL" type="RayCast3D" parent="." unique_id=90766459]
+process_physics_priority = -1
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1, 0, -1.3)
+debug_shape_thickness = 5
+script = ExtResource("4_w2c2i")
+spring_strength = 45000.0
+spring_damping = 2500.0
+rest_distance = 0.5
+grip_curve = ExtResource("6_v41n5")
+use_as_traction = true
+use_as_steering = true
+debug = true
+show_acceleration_ray = true
+show_steering_ray = true
+show_suspension_ray = true
+show_friction_ray = true
+
+[node name="Mesh" type="MeshInstance3D" parent="WheelFL" unique_id=499422820]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, -0.5, 0)
+mesh = SubResource("CylinderMesh_tsrje")
+surface_material_override/0 = SubResource("StandardMaterial3D_yjfjb")
+
+[node name="Label" type="Label3D" parent="WheelFL" unique_id=1874941498]
+transform = Transform3D(-4.371139e-08, 0, -0.99999994, 0, 1, 0, 1, 0, -4.3711385e-08, -0.1376909, -0.47734812, 0)
+text = "Wheel"
+outline_size = 16
+
+[node name="WheelFR" type="RayCast3D" parent="." unique_id=870812174]
+process_physics_priority = -1
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, 0, -1.3)
+debug_shape_thickness = 5
+script = ExtResource("4_w2c2i")
+spring_strength = 45000.0
+spring_damping = 2500.0
+rest_distance = 0.5
+grip_curve = ExtResource("6_v41n5")
+use_as_traction = true
+use_as_steering = true
+debug = true
+show_acceleration_ray = true
+show_steering_ray = true
+show_suspension_ray = true
+show_friction_ray = true
+
+[node name="Mesh" type="MeshInstance3D" parent="WheelFR" unique_id=640974341]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, -0.5, 0)
+mesh = SubResource("CylinderMesh_tsrje")
+surface_material_override/0 = SubResource("StandardMaterial3D_yjfjb")
+
+[node name="Label" type="Label3D" parent="WheelFR" unique_id=1632601691]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.11377168, -0.5309384, 0)
+text = "Wheel"
+outline_size = 16
+
+[node name="WheelBL" type="RayCast3D" parent="." unique_id=213276356]
+process_physics_priority = -1
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1, 0, 1.3)
+debug_shape_thickness = 5
+script = ExtResource("4_w2c2i")
+spring_strength = 35000.0
+spring_damping = 2000.0
+rest_distance = 0.5
+wheel_radius = 0.54
+grip_curve = ExtResource("8_aawam")
+use_as_traction = true
+debug = true
+show_acceleration_ray = true
+show_steering_ray = true
+show_suspension_ray = true
+show_friction_ray = true
+
+[node name="Mesh" type="MeshInstance3D" parent="WheelBL" unique_id=979276215]
+transform = Transform3D(-5.9010375e-08, -1.35, 0, 1.35, -5.9010375e-08, 0, 0, 0, 1.35, 0, -0.5, 0)
+mesh = SubResource("CylinderMesh_tsrje")
+surface_material_override/0 = SubResource("StandardMaterial3D_yjfjb")
+
+[node name="Label" type="Label3D" parent="WheelBL" unique_id=1963491677]
+transform = Transform3D(4.3711395e-08, 8.742277e-08, -1, 8.742278e-08, 1, 8.742278e-08, 1, -8.7422784e-08, 4.371139e-08, -0.1376909, -0.47734812, 0)
+text = "Wheel"
+outline_size = 16
+
+[node name="WheelBR" type="RayCast3D" parent="." unique_id=784140645]
+process_physics_priority = -1
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, 0, 1.3)
+debug_shape_thickness = 5
+script = ExtResource("4_w2c2i")
+spring_strength = 35000.0
+spring_damping = 2000.0
+rest_distance = 0.5
+wheel_radius = 0.54
+grip_curve = ExtResource("8_aawam")
+use_as_traction = true
+debug = true
+show_acceleration_ray = true
+show_steering_ray = true
+show_suspension_ray = true
+show_friction_ray = true
+
+[node name="Mesh" type="MeshInstance3D" parent="WheelBR" unique_id=1441302680]
+transform = Transform3D(-5.9010375e-08, -1.35, 0, 1.35, -5.9010375e-08, 0, 0, 0, 1.35, 0, -0.5, 0)
+mesh = SubResource("CylinderMesh_tsrje")
+surface_material_override/0 = SubResource("StandardMaterial3D_yjfjb")
+
+[node name="Label" type="Label3D" parent="WheelBR" unique_id=1831010712]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.11377168, -0.5309384, 0)
+text = "Wheel"
+outline_size = 16
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=1543756865]
+visible = false
+
+[node name="Label" type="Label" parent="UI" unique_id=1111519376]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -754.0
+offset_bottom = 175.0
+grow_horizontal = 0
+text = "Speed : 0"
+label_settings = SubResource("LabelSettings_j5jx5")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = SubResource("GDScript_00nse")
+
+[node name="Labels" type="Node3D" parent="." unique_id=1186408884]
+
+[node name="Label3D" type="Label3D" parent="." unique_id=1863860732]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.88038796, 0.8457024)
+billboard = 1
+text = "Car"
+font_size = 64
+outline_size = 32
+
+[node name="CameraPivot" type="Node3D" parent="." unique_id=57313914]
+
+[node name="Camera" type="Camera3D" parent="CameraPivot" unique_id=1621931997 node_paths=PackedStringArray("target", "pivot")]
+top_level = true
+script = ExtResource("7_beu0x")
+target = NodePath("../..")
+pivot = NodePath("..")
+
+[node name="hot_rod" parent="." unique_id=405643394 instance=ExtResource("10_21h2q")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.7460363, -2.1579607, 8.31012)
+visible = false
