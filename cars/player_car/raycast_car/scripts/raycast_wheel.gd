@@ -11,6 +11,7 @@ class_name RayCastWheel extends RayCast3D
 @export var z_traction : float = 0.05
 @export var brake_traction : float = 0.25
 @export var shapecast_offset : float = 0.3
+@export var slip_exit_threshold : float = 0.3
 
 @export_group("Usage", "use_as_")
 @export var use_as_suspension : bool = true
@@ -60,7 +61,7 @@ func simulate_wheels(dt : float) -> void:
 	if shapecast and not shapecast.is_colliding() : return
 	
 	var contact : Vector3 = shapecast.get_collision_point(0) if shapecast else get_collision_point()
-	var spring_length : float = global_position.distance_to(contact) - wheel_radius
+	var spring_length : float = maxf(0.0, global_position.distance_to(contact)) - wheel_radius
 	var offset : float = rest_distance - spring_length
 	
 	mesh.position.y = -spring_length
@@ -95,12 +96,13 @@ func simulate_wheels(dt : float) -> void:
 		grip_factor = 0.0
 	var x_traction : float = grip_curve.sample_baked(grip_factor)
 	
-	#if not car.handbreak and grip_factor < 0.2:
-		#car.slipping = false
-	#if car.handbreak:
-		#x_traction = 0.01
-	#elif car.slipping:
-		#x_traction = 0.1
+	if use_as_traction:
+		if not car.handbreak and grip_factor < slip_exit_threshold:
+			car.slipping = false
+		if car.handbreak:
+			x_traction = 0.01
+		elif car.slipping:
+			x_traction = 0.1
 	
 	var gravity : float = -car.get_gravity().y
 	var x_force : Vector3 = (

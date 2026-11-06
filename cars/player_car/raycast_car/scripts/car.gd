@@ -17,11 +17,6 @@ class_name RayCastCar extends RigidBody3D
 @export var show_speed_ray : bool = false
 @export var show_center_of_mass : bool = false
 
-@onready var front_axle : Node3D = $FrontAxleAnchor
-@onready var axle_mesh : MeshInstance3D = $"FrontAxleAnchor/Front-Axle"
-@onready var axle_target : Marker3D = $"WheelFL/Front-Left/AxleTarget"
-
-
 
 var dt : float = 0.0
 
@@ -85,22 +80,3 @@ func _process(delta: float) -> void:
 
 func get_point_velocity(point : Vector3) -> Vector3:
 	return linear_velocity + angular_velocity.cross(point - to_global(center_of_mass))
-
-
-func handle_axle_movement() -> void:
-	# 1. Get the position of the wheel target marker
-	var target_spot = axle_target.global_position
-	
-	# 2. Point the centered axle directly at that wheel marker
-	front_axle.look_at(target_spot, Vector3.UP)
-	
-	# 3. Measure the distance from the center of the car to the wheel
-	var distance_to_wheel = front_axle.global_position.distance_to(target_spot)
-	
-	# 4. Stretch it! 
-	# Since it starts in the center, we multiply by 2 because it stretches 
-	# out to both sides equally from the middle.
-	var full_required_width = distance_to_wheel * 2.0
-	
-	# Note: Change '.z' to '.x' or '.y' if it stretches the wrong way!
-	axle_mesh.scale.z = full_required_width / base_axle_width
