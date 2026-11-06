@@ -9,6 +9,7 @@
 [ext_resource type="LightmapGIData" uid="uid://br8svrhjexp3p" path="res://scenes/test.lmbake" id="7_at5dv"]
 [ext_resource type="PackedScene" uid="uid://cc2i45h1wm0ef" path="res://cars/player_car/raycast_car/scenes/car.tscn" id="8_jcd4p"]
 [ext_resource type="Script" uid="uid://b53vtvasf0338" path="res://cars/components/scripts/debug_camera.gd" id="9_uacia"]
+[ext_resource type="Material" uid="uid://db3yalmfcx2c0" path="res://cars/player_car/meshes/player_meshes/materials/wheel_mat.tres" id="10_yk7ts"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_i3aeo"]
 shader = ExtResource("1_j5jx5")
@@ -128,3 +129,27 @@ script = ExtResource("9_uacia")
 metadata/_custom_type_script = "uid://b53vtvasf0338"
 
 [node name="Node" type="Node" parent="." unique_id=818599598]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Node" unique_id=2028252292]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55.016502, 0.5551461, 0.0029678345)
+use_collision = true
+size = Vector3(0.14257813, 0.3046875, 22.523438)
+material = ExtResource("10_yk7ts")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Node" unique_id=1791905667]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 54.706028, 0.5551461, 0.0029678345)
+use_collision = true
+size = Vector3(0.14257813, 0.3046875, 22.523438)
+material = ExtResource("10_yk7ts")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Node" unique_id=561063224]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 54.37176, 0.63424766, 0.0029678345)
+use_collision = true
+size = Vector3(0.14257813, 0.46289063, 22.523438)
+material = ExtResource("10_yk7ts")
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="Node" unique_id=2055118930]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 53.956253, 0.57956016, 0.0029678345)
+use_collision = true
+size = Vector3(0.31591797, 0.35351563, 22.523438)
+material = ExtResource("10_yk7ts")

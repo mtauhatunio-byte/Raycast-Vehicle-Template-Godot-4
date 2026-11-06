@@ -5,10 +5,17 @@
 [ext_resource type="Script" uid="uid://carpfma6tnn25" path="res://cars/player_car/raycast_car/scripts/raycast_wheel.gd" id="4_w2c2i"]
 [ext_resource type="Curve" uid="uid://b0khdhmajyklo" path="res://cars/player_car/raycast_car/resources/front_tires_grip_curve.tres" id="6_v41n5"]
 [ext_resource type="Script" uid="uid://cabppm3cppapl" path="res://cars/player_car/raycast_car/scripts/camera.gd" id="7_beu0x"]
+[ext_resource type="Script" uid="uid://dggpgh1ulxds3" path="res://cars/player_car/raycast_car/scripts/player_input.gd" id="7_cp3fk"]
 [ext_resource type="Curve" uid="uid://jh7f7pcb64mo" path="res://cars/player_car/raycast_car/resources/back_tires_grip_curve.tres" id="8_aawam"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_00nse"]
 friction = 0.0
+
+[sub_resource type="Curve" id="Curve_cp3fk"]
+_limits = [0.0, 45.0, 0.0, 30.0]
+_data = [Vector2(0, 45), 0.0, 0.0, 0, 0, Vector2(12, 27), 0.0, 0.0, 0, 0, Vector2(30, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+metadata/_snap_enabled = true
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_oqmm1"]
 points = PackedVector3Array(0.011288712, 0.01303421, 0.011387302, -0.011250794, -0.015799638, 0.007778128, -0.010348419, -0.017612698, -0.010250794, 0.010386337, -0.035641618, 0.0005682539, 0.010386337, 0.018450793, -0.010250794, -0.010348419, 0.018450793, -0.007546032, 0.005876671, -0.03925079, -0.010250794, -0.011250794, 0.013039857, 0.011387302, -0.010348419, -0.035641618, 0.0005682539, 0.011288712, -0.015805285, 0.009582715, -0.0058409595, -0.03925079, -0.010250794, -0.010348419, 0.018450793, -0.010250794, 0.010386337, -0.017612698, -0.010250794, -0.011250794, -0.015799638, 0.009582715, -0.009446044, -0.035641618, 0.0023686043, 0.010386337, 0.017547088, 0.0005682539, 0.009483962, -0.035641618, 0.0023686043, -0.010348419, 0.017547088, 0.0005682539, -0.010348419, -0.0077001797, 0.010485008, -0.0049385848, -0.038347088, -0.0030366832, 0.010386337, 0.0067252163, 0.011387302, 0.005876671, -0.03925079, -0.0066437386, 0.011288712, -0.015805285, 0.007778128, -0.0072534084, -0.03606661, -0.009699999, 0.0072892327, -0.03606661, -0.009699999, 0.010386337, -0.0077001797, 0.010485008, -0.010348419, 0.0067252163, 0.011387302, 0.0040741283, -0.03744338, -0.00033192133, 0.010386337, -0.035641618, -0.00033192133, -0.010348419, -0.035641618, -0.00033192133, -0.0058409595, -0.03925079, -0.0066437386, 0.010386337, 0.018450793, -0.007546032)
@@ -121,6 +128,10 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_arklk")
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_oqmm1"]
+height = 0.2
+radius = 0.46
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_2ehq3"]
 _surfaces = [{
@@ -391,6 +402,9 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_hraji")
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_cp3fk"]
+height = 0.2
 
 [sub_resource type="LabelSettings" id="LabelSettings_j5jx5"]
 font_size = 64
@@ -874,12 +888,16 @@ physics_material_override = SubResource("PhysicsMaterial_00nse")
 linear_damp_mode = 1
 script = ExtResource("1_nkaj5")
 wheels = [NodePath("WheelFL"), NodePath("WheelFR"), NodePath("WheelBL"), NodePath("WheelBR")]
-acceleration = 75.0
+acceleration = 50.0
 max_speed = 30.0
 acceleration_curve = ExtResource("2_00nse")
+tire_turn_curve_degrees = SubResource("Curve_cp3fk")
 debug = true
 show_speed_ray = true
 show_center_of_mass = true
+
+[node name="PlayerInput" type="Node" parent="." unique_id=1002832313]
+script = ExtResource("7_cp3fk")
 
 [node name="Collision" type="CollisionShape3D" parent="." unique_id=1158880140]
 transform = Transform3D(-66.299995, 1.001102e-05, 1.1934067e-12, 0, -7.903575e-06, 66.299995, 1.0011021e-05, 66.299995, 7.903575e-06, 0, -0.034426272, 0.44095016)
@@ -898,9 +916,10 @@ script = ExtResource("4_w2c2i")
 spring_strength = 45000.0
 spring_damping = 3000.0
 rest_distance = 0.1
-wheel_radius = 0.47
+wheel_radius = 0.46
 over_extend = 0.15
 grip_curve = ExtResource("6_v41n5")
+brake_traction = 1.0
 use_as_steering = true
 debug = true
 show_acceleration_ray = true
@@ -917,6 +936,14 @@ transform = Transform3D(-4.371139e-08, 0, -0.99999994, 0, 1, 0, 1, 0, -4.3711385
 text = "Wheel"
 outline_size = 16
 
+[node name="ShapeCast" type="ShapeCast3D" parent="WheelFL" unique_id=1877886192]
+process_physics_priority = -1
+transform = Transform3D(2.9802322e-08, -1, 0, 1, 2.9802322e-08, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("CylinderShape3D_oqmm1")
+target_position = Vector3(0, 0, 0)
+max_results = 3
+debug_shape_custom_color = Color(1, 0, 0, 1)
+
 [node name="WheelFR" type="RayCast3D" parent="." unique_id=870812174]
 process_physics_priority = -1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.929, -0.5, -1.95)
@@ -925,9 +952,10 @@ script = ExtResource("4_w2c2i")
 spring_strength = 45000.0
 spring_damping = 3000.0
 rest_distance = 0.1
-wheel_radius = 0.47
+wheel_radius = 0.46
 over_extend = 0.15
 grip_curve = ExtResource("6_v41n5")
+brake_traction = 1.0
 use_as_steering = true
 debug = true
 show_acceleration_ray = true
@@ -944,6 +972,14 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.11
 text = "Wheel"
 outline_size = 16
 
+[node name="ShapeCast" type="ShapeCast3D" parent="WheelFR" unique_id=745907365]
+process_physics_priority = -1
+transform = Transform3D(2.9802322e-08, -1, 0, 1, 2.9802322e-08, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("CylinderShape3D_oqmm1")
+target_position = Vector3(0, 0, 0)
+max_results = 3
+debug_shape_custom_color = Color(1, 0, 0, 1)
+
 [node name="WheelBL" type="RayCast3D" parent="." unique_id=213276356]
 process_physics_priority = -1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.14, -0.5, 1.4)
@@ -954,6 +990,7 @@ spring_damping = 2500.0
 rest_distance = 0.1
 wheel_radius = 0.507
 grip_curve = ExtResource("8_aawam")
+brake_traction = 1.0
 use_as_traction = true
 debug = true
 show_acceleration_ray = true
@@ -970,6 +1007,14 @@ transform = Transform3D(4.3711395e-08, 8.742277e-08, -1, 8.742278e-08, 1, 8.7422
 text = "Wheel"
 outline_size = 16
 
+[node name="ShapeCast" type="ShapeCast3D" parent="WheelBL" unique_id=1465314247]
+process_physics_priority = -1
+transform = Transform3D(2.9802322e-08, -1, 0, 1, 2.9802322e-08, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("CylinderShape3D_oqmm1")
+target_position = Vector3(0, 0, 0)
+max_results = 3
+debug_shape_custom_color = Color(1, 0, 0, 1)
+
 [node name="WheelBR" type="RayCast3D" parent="." unique_id=784140645]
 process_physics_priority = -1
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, -0.5, 1.4)
@@ -980,6 +1025,7 @@ spring_damping = 2500.0
 rest_distance = 0.1
 wheel_radius = 0.507
 grip_curve = ExtResource("8_aawam")
+brake_traction = 1.0
 use_as_traction = true
 debug = true
 show_acceleration_ray = true
@@ -995,6 +1041,14 @@ mesh = SubResource("ArrayMesh_6p3m3")
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.11377168, -0.5309384, 0)
 text = "Wheel"
 outline_size = 16
+
+[node name="ShapeCast" type="ShapeCast3D" parent="WheelBR" unique_id=1045877937]
+process_physics_priority = -1
+transform = Transform3D(2.9802322e-08, -1, 0, 1, 2.9802322e-08, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("CylinderShape3D_cp3fk")
+target_position = Vector3(0, 0, 0)
+max_results = 3
+debug_shape_custom_color = Color(1, 0, 0, 1)
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=1543756865]
 
