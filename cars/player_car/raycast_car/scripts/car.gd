@@ -56,15 +56,21 @@ func _physics_process(delta: float) -> void:
 		wheel_rotation(wheel)
 		if wheel.is_colliding():
 			grounded = true
+		if Input.is_action_pressed("brake"):
+			wheel.braking = true
+		else:
+			wheel.braking = false
 	
 	
 	if grounded:
 		center_of_mass = Vector3.ZERO
 		linear_damp = 0.0
+		physics_material_override.friction = 0.0
 	else:
 		center_of_mass_mode = RigidBody3D.CENTER_OF_MASS_MODE_CUSTOM
 		center_of_mass = Vector3.DOWN * 0.5
 		linear_damp = 0.1
+		physics_material_override.friction = 1
 	
 	
 	if OS.is_debug_build() and debug:

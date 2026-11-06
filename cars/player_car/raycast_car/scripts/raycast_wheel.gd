@@ -8,6 +8,7 @@ class_name RayCastWheel extends RayCast3D
 @export var over_extend : float = 0.2
 @export var grip_curve : Curve = null
 @export var z_traction : float = 0.05
+@export var brake_traction : float = 0.25
 
 @export_group("Usage", "use_as_")
 @export var use_as_suspension : bool = true
@@ -31,6 +32,7 @@ class_name RayCastWheel extends RayCast3D
 
 var engine_force : float = 0.0
 var grip_factor : float = 0.0
+var braking : bool = false
 
 
 func _ready() -> void:
@@ -38,10 +40,9 @@ func _ready() -> void:
 
 
 func simulate_wheels(dt : float) -> void:
-	force_raycast_update()
 	target_position.y = -(rest_distance + over_extend + wheel_radius)
 	
-	var forward : Vector3 = -global_basis.z
+	var forward : Vector3 = -global_basis.z.normalized()
 	var vel : float = forward.dot(car.linear_velocity)
 	mesh.rotate_x( (-vel * get_physics_process_delta_time() ) / wheel_radius)
 	
@@ -59,8 +60,9 @@ func simulate_wheels(dt : float) -> void:
 	var spring_force : float = spring_strength * offset
 	var tire_vel : Vector3 = car.get_point_velocity(contact)
 	var spring_damp_f : float = spring_damping * global_basis.y.dot(tire_vel)
+	var suspension_force : float = spring_force - spring_damp_f
 	
-	var y_force : Vector3 = (spring_force - spring_damp_f) * get_collision_normal()
+	var y_force : Vector3 = suspension_force * get_collision_normal()
 	
 	var w_force : Vector3 = Vector3.ZERO
 	
@@ -93,8 +95,13 @@ func simulate_wheels(dt : float) -> void:
 		* ((car.mass * gravity) / car.wheels.size()))
 	
 	var f_vel : float = forward.dot(tire_vel)
-	var z_friction : float = z_traction
+	var z_friction : float = brake_traction if braking else z_traction
 	var z_force : Vector3 = -forward * f_vel * z_friction * ((car.mass * gravity) / car.wheels.size())
+	
+	if absf(f_vel) < 0.1:
+		var susp : Vector3 = global_basis.y * suspension_force
+		z_force.z -= susp.z * car.global_basis.y.dot(Vector3.UP)
+		x_force.x -= susp.x * car.global_basis.y.dot(Vector3.UP)
 	
 	car.apply_force(x_force, force_pos)
 	car.apply_force(y_force, force_pos)
