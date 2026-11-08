@@ -24,42 +24,25 @@ SPACE to handbrake
 SHIFT to drift
 
 
-## 🛠️ Built With
+## Built With
 
-- **Engine:** Godot 4
-- **Language:** GDScript
-- **Physics:** Godot Physics
+**Engine:** Godot 4
+**Language:** GDScript
+  
 
-## 🚀 Getting Started
+## About
 
-1. Download or clone this repository.
-2. Open the project using Godot 4.
-3. Import the project assets if prompted.
-4. Run the main scene.
+The Project is a small prototype of a physics-based RayCast vehicle, not a full complete game.
 
-## 📁 Project Status
 
-This project is considered complete in its current scope.
+## License
 
-It is provided as a small experimental vehicle physics template rather than a fully featured racing game or production-ready vehicle framework.
+Published under the MIT License. For more info, check LICENSE.
 
-## ⚠️ Limitations
+## Credits
 
-- Vehicle handling is intentionally arcade-oriented.
-- The project is not designed to simulate realistic vehicle dynamics.
-- The included environment is primarily an example/testing environment.
-- Developers may need to modify the controller and physics settings for their own projects.
+Created by mtauhatunio-byte.
+Grass Texture from AmbientCG : https://ambientcg.com/view?id=Grass004
+Hot Rod Vehicle from Grant Abbitt (Gabbitt)'s Hot Rod series : https://www.youtube.com/watch?v=tIAZ1o3GFH4
 
-## 📜 License
-
-See the [LICENSE](LICENSE) file for usage and redistribution permissions.
-
-## 👨‍💻 Credits
-
-Created by **[Your GitHub Username]**.
-
-Built with Godot 4.
-
----
-
-*The game was abandoned. The vehicle physics lives on.* 🗿
+Built with Godot 4.7.
