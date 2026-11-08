@@ -7,4 +7,3 @@ func _process(delta: float) -> void:
 	steering = Input.get_action_strength("steer_right") - Input.get_action_strength("steer_left")
 	handbrake = Input.is_action_pressed("handbrake")
 	
-	print("Throttle : ", throttle)

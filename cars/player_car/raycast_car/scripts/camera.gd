@@ -1,42 +1,50 @@
-class_name FollowCamera extends Camera3D
+class_name PlayerCamera extends Camera3D
 
-@export var minimun_distance : float = 4.0
-@export var maximum_distance : float = 8.0
+
+@export var minimum_distance : float = 3.0
+@export var maximum_distance : float = 6.0
 @export var height : float = 3.0
-@export var sensitivity : float = 0.001
+@export var sensitivity : float = 50
 
 @export var target : Node3D = null
 @export var pivot : Node3D = null
 
+var moving : bool = false
+
+
+func _ready() -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	if not target:
+		target = get_owner()
+	if not pivot:
+		pivot = get_parent()
+
 
 func _unhandled_input(event: InputEvent) -> void:
-	
-	if not pivot : return
-	
-	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) and Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
+	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) and not Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	elif Input.is_key_pressed(KEY_ESCAPE) and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+	elif Input.is_key_pressed(KEY_ESCAPE):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	
-	var moving : bool = event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
+	moving = (Input.mouse_mode == Input.MOUSE_MODE_CAPTURED and event is InputEventMouseMotion)
 	
 	if moving:
 		top_level = false
-		pivot.rotate_y(-event.relative.x * sensitivity)
+		pivot.rotate_y(-event.relative.x * deg_to_rad(sensitivity / 1000))
 		top_level = true
+	
 
 
 func _process(delta: float) -> void:
-	var from_direction : Vector3 = global_position - target.global_position
+	var from_target : Vector3 = global_position - target.global_position
 	
+	if from_target.length() < minimum_distance:
+		from_target = from_target.normalized() * minimum_distance
+	if from_target.length() > maximum_distance:
+		from_target = from_target.normalized() * maximum_distance
 	
-	if from_direction.length() < minimun_distance:
-		from_direction = from_direction.normalized() * minimun_distance
-	elif from_direction.length() > maximum_distance:
-		from_direction = from_direction.normalized() * maximum_distance
-	
-	from_direction.y = height
-	global_position = target.global_position + from_direction
+	from_target.y = height
+	global_position = target.global_position + from_target
 	
 	var look_direction : Vector3 = global_position.direction_to(target.global_position).abs() - Vector3.UP
 	if not look_direction.is_zero_approx():

@@ -10,8 +10,8 @@ config_version=5
 
 [application]
 
-config/name="Leadbowl"
-run/main_scene="uid://d3w2a1sn4d8m"
+config/name="The Abandoned Hilly Drive"
+run/main_scene="uid://dydpm1sttmv76"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
@@ -33,6 +33,7 @@ settings/addon_root_folder="res://addons/debug_draw_3d"
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
+window/size/mode=3
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"
 window/vsync/vsync_mode=0
@@ -103,6 +104,7 @@ handbrake={
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"

@@ -7,13 +7,18 @@
 [ext_resource type="Script" uid="uid://cabppm3cppapl" path="res://cars/player_car/raycast_car/scripts/camera.gd" id="7_beu0x"]
 [ext_resource type="Script" uid="uid://dggpgh1ulxds3" path="res://cars/player_car/raycast_car/scripts/player_input.gd" id="7_cp3fk"]
 [ext_resource type="Curve" uid="uid://jh7f7pcb64mo" path="res://cars/player_car/raycast_car/resources/back_tires_grip_curve.tres" id="8_aawam"]
+[ext_resource type="AudioStream" uid="uid://ccvbyfx7hbdby" path="res://cars/player_car/raycast_car/sounds/hot_rod_loop.wav" id="8_lufsy"]
+[ext_resource type="AudioStream" uid="uid://dj73kibe5wkdt" path="res://cars/player_car/raycast_car/sounds/drifting_loop.wav" id="9_7kpes"]
+[ext_resource type="Script" uid="uid://d02xkv7dp8ol7" path="res://cars/player_car/raycast_car/scripts/engine.gd" id="9_21h2q"]
+[ext_resource type="Script" uid="uid://clog0iki5bhat" path="res://cars/player_car/raycast_car/scripts/drifting.gd" id="11_hraji"]
+[ext_resource type="Script" uid="uid://w34klwwdd683" path="res://cars/player_car/raycast_car/scripts/engine_smoke.gd" id="12_hw8vl"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_00nse"]
 friction = 0.0
 
 [sub_resource type="Curve" id="Curve_cp3fk"]
 _limits = [0.0, 45.0, 0.0, 30.0]
-_data = [Vector2(0, 45), 0.0, 0.0, 0, 0, Vector2(12, 27), 0.0, 0.0, 0, 0, Vector2(30, 0), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 45), 0.0, 0.0, 0, 0, Vector2(12, 27), 0.0, 0.0, 0, 0, Vector2(30, 9), 0.0, 0.0, 0, 0]
 point_count = 3
 metadata/_snap_enabled = true
 
@@ -132,6 +137,18 @@ shadow_mesh = SubResource("ArrayMesh_arklk")
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_oqmm1"]
 height = 0.2
 radius = 0.46
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cp3fk"]
+shading_mode = 0
+vertex_color_use_as_albedo = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_tsrje"]
+size = Vector2(0.2, 0.935)
+orientation = 1
+
+[sub_resource type="Gradient" id="Gradient_cp3fk"]
+offsets = PackedFloat32Array(0, 0.3203125, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0)
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_2ehq3"]
 _surfaces = [{
@@ -882,17 +899,28 @@ height = 0.01
 radial_segments = 8
 rings = 0
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hw8vl"]
+shading_mode = 0
+vertex_color_use_as_albedo = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_tsrje"]
+
+[sub_resource type="Curve" id="Curve_hraji"]
+_data = [Vector2(1e-05, 0.40845072), 0.0, -5.612552, 0, 0, Vector2(0.21794873, 0.70422536), 0.0, 0.0, 0, 0, Vector2(0.5, 0.7183099), 0.0, 0.0, 0, 0, Vector2(0.74908423, 0.70422536), 0.0, 0.0, 0, 0, Vector2(0.9065934, 0.36619717), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 6
+
+[sub_resource type="Gradient" id="Gradient_arklk"]
+colors = PackedColorArray(0.24356923, 0.24356923, 0.24356923, 1, 0.40705842, 0.40705565, 0.40705383, 1)
+
 [node name="Car" type="RigidBody3D" unique_id=1471651235 node_paths=PackedStringArray("wheels")]
 mass = 1200.0
 physics_material_override = SubResource("PhysicsMaterial_00nse")
 linear_damp_mode = 1
 script = ExtResource("1_nkaj5")
 wheels = [NodePath("WheelFL"), NodePath("WheelFR"), NodePath("WheelBL"), NodePath("WheelBR")]
-acceleration = 50.0
-max_speed = 30.0
+max_speed = 50.0
 acceleration_curve = ExtResource("2_00nse")
 tire_turn_curve_degrees = SubResource("Curve_cp3fk")
-debug = true
 show_speed_ray = true
 show_center_of_mass = true
 
@@ -921,7 +949,6 @@ over_extend = 0.15
 grip_curve = ExtResource("6_v41n5")
 brake_traction = 1.0
 use_as_steering = true
-debug = true
 show_acceleration_ray = true
 show_steering_ray = true
 show_suspension_ray = true
@@ -931,11 +958,6 @@ show_friction_ray = true
 transform = Transform3D(-78, 1.1777672e-05, 1.404008e-12, 0, -9.298325e-06, 77.99999, 1.1777673e-05, 77.99999, 9.298325e-06, 0, 0, 0)
 mesh = SubResource("ArrayMesh_k5o2u")
 
-[node name="Label" type="Label3D" parent="WheelFL" unique_id=1874941498]
-transform = Transform3D(-4.371139e-08, 0, -0.99999994, 0, 1, 0, 1, 0, -4.3711385e-08, -0.1376909, -0.47734812, 0)
-text = "Wheel"
-outline_size = 16
-
 [node name="ShapeCast" type="ShapeCast3D" parent="WheelFL" unique_id=1877886192]
 process_physics_priority = -1
 transform = Transform3D(2.9802322e-08, -1, 0, 1, 2.9802322e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -943,6 +965,17 @@ shape = SubResource("CylinderShape3D_oqmm1")
 target_position = Vector3(0, 0, 0)
 max_results = 3
 debug_shape_custom_color = Color(1, 0, 0, 1)
+
+[node name="Mark" type="CPUParticles3D" parent="WheelFL" unique_id=1160065827]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.40798414, 0)
+material_override = SubResource("StandardMaterial3D_cp3fk")
+emitting = false
+amount = 100
+mesh = SubResource("QuadMesh_tsrje")
+particle_flag_align_y = true
+gravity = Vector3(0, 0, 0)
+color = Color(0, 0, 0, 1)
+color_ramp = SubResource("Gradient_cp3fk")
 
 [node name="WheelFR" type="RayCast3D" parent="." unique_id=870812174]
 process_physics_priority = -1
@@ -957,7 +990,6 @@ over_extend = 0.15
 grip_curve = ExtResource("6_v41n5")
 brake_traction = 1.0
 use_as_steering = true
-debug = true
 show_acceleration_ray = true
 show_steering_ray = true
 show_suspension_ray = true
@@ -967,11 +999,6 @@ show_friction_ray = true
 transform = Transform3D(-78, 1.1777672e-05, 1.404008e-12, 0, -9.298325e-06, 77.99999, 1.1777673e-05, 77.99999, 9.298325e-06, 0, 0, 0)
 mesh = SubResource("ArrayMesh_6y2vo")
 
-[node name="Label" type="Label3D" parent="WheelFR" unique_id=1632601691]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.11377168, -0.5309384, 0)
-text = "Wheel"
-outline_size = 16
-
 [node name="ShapeCast" type="ShapeCast3D" parent="WheelFR" unique_id=745907365]
 process_physics_priority = -1
 transform = Transform3D(2.9802322e-08, -1, 0, 1, 2.9802322e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -979,6 +1006,17 @@ shape = SubResource("CylinderShape3D_oqmm1")
 target_position = Vector3(0, 0, 0)
 max_results = 3
 debug_shape_custom_color = Color(1, 0, 0, 1)
+
+[node name="Mark" type="CPUParticles3D" parent="WheelFR" unique_id=1453765383]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.40798414, 0)
+material_override = SubResource("StandardMaterial3D_cp3fk")
+emitting = false
+amount = 100
+mesh = SubResource("QuadMesh_tsrje")
+particle_flag_align_y = true
+gravity = Vector3(0, 0, 0)
+color = Color(0, 0, 0, 1)
+color_ramp = SubResource("Gradient_cp3fk")
 
 [node name="WheelBL" type="RayCast3D" parent="." unique_id=213276356]
 process_physics_priority = -1
@@ -989,10 +1027,10 @@ spring_strength = 35000.0
 spring_damping = 2500.0
 rest_distance = 0.1
 wheel_radius = 0.507
+over_extend = 0.15
 grip_curve = ExtResource("8_aawam")
 brake_traction = 1.0
 use_as_traction = true
-debug = true
 show_acceleration_ray = true
 show_steering_ray = true
 show_suspension_ray = true
@@ -1002,11 +1040,6 @@ show_friction_ray = true
 transform = Transform3D(78, 0, 0, 0, -3.4094883e-06, 78, 0, -78, -3.4094883e-06, 0, 0, 0)
 mesh = SubResource("ArrayMesh_1gog7")
 
-[node name="Label" type="Label3D" parent="WheelBL" unique_id=1963491677]
-transform = Transform3D(4.3711395e-08, 8.742277e-08, -1, 8.742278e-08, 1, 8.742278e-08, 1, -8.7422784e-08, 4.371139e-08, -0.1376909, -0.47734812, 0)
-text = "Wheel"
-outline_size = 16
-
 [node name="ShapeCast" type="ShapeCast3D" parent="WheelBL" unique_id=1465314247]
 process_physics_priority = -1
 transform = Transform3D(2.9802322e-08, -1, 0, 1, 2.9802322e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -1014,6 +1047,17 @@ shape = SubResource("CylinderShape3D_oqmm1")
 target_position = Vector3(0, 0, 0)
 max_results = 3
 debug_shape_custom_color = Color(1, 0, 0, 1)
+
+[node name="Mark" type="CPUParticles3D" parent="WheelBL" unique_id=1597009061]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.40798414, 0)
+material_override = SubResource("StandardMaterial3D_cp3fk")
+emitting = false
+amount = 100
+mesh = SubResource("QuadMesh_tsrje")
+particle_flag_align_y = true
+gravity = Vector3(0, 0, 0)
+color = Color(0, 0, 0, 1)
+color_ramp = SubResource("Gradient_cp3fk")
 
 [node name="WheelBR" type="RayCast3D" parent="." unique_id=784140645]
 process_physics_priority = -1
@@ -1024,10 +1068,10 @@ spring_strength = 35000.0
 spring_damping = 2500.0
 rest_distance = 0.1
 wheel_radius = 0.507
+over_extend = 0.15
 grip_curve = ExtResource("8_aawam")
 brake_traction = 1.0
 use_as_traction = true
-debug = true
 show_acceleration_ray = true
 show_steering_ray = true
 show_suspension_ray = true
@@ -1037,11 +1081,6 @@ show_friction_ray = true
 transform = Transform3D(-87.54726, 1.3219267e-05, 1.5758596e-12, 0, -1.0436446e-05, 87.54725, 1.3219268e-05, 87.54725, 1.0436446e-05, 0, 0, 0)
 mesh = SubResource("ArrayMesh_6p3m3")
 
-[node name="Label" type="Label3D" parent="WheelBR" unique_id=1831010712]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.11377168, -0.5309384, 0)
-text = "Wheel"
-outline_size = 16
-
 [node name="ShapeCast" type="ShapeCast3D" parent="WheelBR" unique_id=1045877937]
 process_physics_priority = -1
 transform = Transform3D(2.9802322e-08, -1, 0, 1, 2.9802322e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -1049,6 +1088,17 @@ shape = SubResource("CylinderShape3D_cp3fk")
 target_position = Vector3(0, 0, 0)
 max_results = 3
 debug_shape_custom_color = Color(1, 0, 0, 1)
+
+[node name="Mark" type="CPUParticles3D" parent="WheelBR" unique_id=1012431358]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.40798414, 0)
+material_override = SubResource("StandardMaterial3D_cp3fk")
+emitting = false
+amount = 100
+mesh = SubResource("QuadMesh_tsrje")
+particle_flag_align_y = true
+gravity = Vector3(0, 0, 0)
+color = Color(0, 0, 0, 1)
+color_ramp = SubResource("Gradient_cp3fk")
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=1543756865]
 
@@ -1065,20 +1115,13 @@ horizontal_alignment = 1
 vertical_alignment = 1
 script = SubResource("GDScript_00nse")
 
-[node name="Labels" type="Node3D" parent="." unique_id=1186408884]
-
-[node name="Label3D" type="Label3D" parent="." unique_id=1863860732]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.88038796, 0.8457024)
-billboard = 1
-text = "Car"
-font_size = 64
-outline_size = 32
-
 [node name="CameraPivot" type="Node3D" parent="." unique_id=57313914]
 
 [node name="Camera" type="Camera3D" parent="CameraPivot" unique_id=1621931997 node_paths=PackedStringArray("target", "pivot")]
 top_level = true
 script = ExtResource("7_beu0x")
+minimum_distance = 4.0
+maximum_distance = 8.0
 target = NodePath("../..")
 pivot = NodePath("..")
 
@@ -1104,3 +1147,107 @@ mesh = SubResource("CylinderMesh_tsrje")
 [node name="Light2" type="MeshInstance3D" parent="HotRod" unique_id=712372180]
 transform = Transform3D(1.125, -1.6987042e-07, 7.42527e-15, 0, -4.9175313e-08, -1.125, 1.6987042e-07, 1.125, -4.9175313e-08, -0.6673221, 1.2760303, 2.9773633)
 mesh = SubResource("CylinderMesh_tsrje")
+
+[node name="SoundContainer" type="Node3D" parent="." unique_id=1211661959]
+
+[node name="Engine" type="AudioStreamPlayer3D" parent="SoundContainer" unique_id=1925318126]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.214861)
+stream = ExtResource("8_lufsy")
+volume_db = -15.0
+bus = &"SFX"
+script = ExtResource("9_21h2q")
+
+[node name="Drifting" type="AudioStreamPlayer3D" parent="SoundContainer" unique_id=187448344]
+stream = ExtResource("9_7kpes")
+volume_db = -15.0
+autoplay = true
+bus = &"SFX"
+script = ExtResource("11_hraji")
+
+[node name="EngineSmoke" type="Node3D" parent="." unique_id=1758564160]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.21165)
+script = ExtResource("12_hw8vl")
+
+[node name="Smoke" type="CPUParticles3D" parent="EngineSmoke" unique_id=1021935782]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5080778, -0.00743033, -0.13343585)
+material_override = SubResource("StandardMaterial3D_hw8vl")
+amount = 10
+lifetime = 2.0
+mesh = SubResource("SphereMesh_tsrje")
+spread = 180.0
+gravity = Vector3(0, 0.1, 0)
+initial_velocity_max = 0.1
+scale_amount_min = 0.1
+scale_amount_max = 0.3
+scale_amount_curve = SubResource("Curve_hraji")
+color_initial_ramp = SubResource("Gradient_arklk")
+
+[node name="Smoke2" type="CPUParticles3D" parent="EngineSmoke" unique_id=1068098141]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5080778, -0.00743033, 0.07486153)
+material_override = SubResource("StandardMaterial3D_hw8vl")
+amount = 10
+lifetime = 2.0
+mesh = SubResource("SphereMesh_tsrje")
+spread = 180.0
+gravity = Vector3(0, 0.1, 0)
+initial_velocity_max = 0.1
+scale_amount_min = 0.1
+scale_amount_max = 0.3
+scale_amount_curve = SubResource("Curve_hraji")
+color_initial_ramp = SubResource("Gradient_arklk")
+
+[node name="Smoke3" type="CPUParticles3D" parent="EngineSmoke" unique_id=314871853]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5080778, -0.00743033, 0.2875852)
+material_override = SubResource("StandardMaterial3D_hw8vl")
+amount = 10
+lifetime = 2.0
+mesh = SubResource("SphereMesh_tsrje")
+spread = 180.0
+gravity = Vector3(0, 0.1, 0)
+initial_velocity_max = 0.1
+scale_amount_min = 0.1
+scale_amount_max = 0.3
+scale_amount_curve = SubResource("Curve_hraji")
+color_initial_ramp = SubResource("Gradient_arklk")
+
+[node name="Smoke4" type="CPUParticles3D" parent="EngineSmoke" unique_id=10296874]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5042128, -0.00743033, 0.2875852)
+material_override = SubResource("StandardMaterial3D_hw8vl")
+amount = 10
+lifetime = 2.0
+mesh = SubResource("SphereMesh_tsrje")
+spread = 180.0
+gravity = Vector3(0, 0.1, 0)
+initial_velocity_max = 0.1
+scale_amount_min = 0.1
+scale_amount_max = 0.3
+scale_amount_curve = SubResource("Curve_hraji")
+color_initial_ramp = SubResource("Gradient_arklk")
+
+[node name="Smoke5" type="CPUParticles3D" parent="EngineSmoke" unique_id=1724947547]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5042128, -0.00743033, 0.07832372)
+material_override = SubResource("StandardMaterial3D_hw8vl")
+amount = 10
+lifetime = 2.0
+mesh = SubResource("SphereMesh_tsrje")
+spread = 180.0
+gravity = Vector3(0, 0.1, 0)
+initial_velocity_max = 0.1
+scale_amount_min = 0.1
+scale_amount_max = 0.3
+scale_amount_curve = SubResource("Curve_hraji")
+color_initial_ramp = SubResource("Gradient_arklk")
+
+[node name="Smoke6" type="CPUParticles3D" parent="EngineSmoke" unique_id=1878425454]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5042128, -0.00743033, -0.13796484)
+material_override = SubResource("StandardMaterial3D_hw8vl")
+amount = 10
+lifetime = 2.0
+mesh = SubResource("SphereMesh_tsrje")
+spread = 180.0
+gravity = Vector3(0, 0.1, 0)
+initial_velocity_max = 0.1
+scale_amount_min = 0.1
+scale_amount_max = 0.3
+scale_amount_curve = SubResource("Curve_hraji")
+color_initial_ramp = SubResource("Gradient_arklk")

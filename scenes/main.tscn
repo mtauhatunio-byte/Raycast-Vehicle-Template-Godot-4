@@ -1,0 +1,336 @@
+[gd_scene format=3 uid="uid://dydpm1sttmv76"]
+
+[ext_resource type="PackedScene" uid="uid://cc2i45h1wm0ef" path="res://cars/player_car/raycast_car/scenes/car.tscn" id="1_0wfyh"]
+[ext_resource type="Script" uid="uid://ckftk3sto1v2w" path="res://scenes/main.gd" id="1_11yus"]
+[ext_resource type="Shader" uid="uid://kl1e0bihuwt0" path="res://Shaders/sky/Scrolling_Sky.gdshader" id="1_ih3m7"]
+[ext_resource type="Texture2D" uid="uid://bpydg3nglrlar" path="res://Shaders/sky/skybox-day.png" id="2_11yus"]
+[ext_resource type="Texture2D" uid="uid://dahts31es4dp0" path="res://textures/grass/Grass004_1K-PNG_Color.png" id="2_ids8r"]
+[ext_resource type="Image" uid="uid://dcbeki3uqucc3" path="res://scenes/Main/Heightmap_0_0.res" id="2_sugp2"]
+[ext_resource type="Texture2D" uid="uid://cctbvpc7oybsp" path="res://textures/grass/Grass004_1K-PNG_Displacement.png" id="3_dnhof"]
+[ext_resource type="Texture2D" uid="uid://cua46ctlm8g0o" path="res://textures/grass/Grass004_1K-PNG_NormalGL.png" id="4_1v6qk"]
+[ext_resource type="Texture2D" uid="uid://bd6c65fsera8n" path="res://textures/grass/Grass004_1K-PNG_Roughness.png" id="5_augu2"]
+[ext_resource type="Image" uid="uid://cuc15flt4sftk" path="res://scenes/Main/Splatmap_0_0_0.res" id="7_tm6hj"]
+[ext_resource type="Image" uid="uid://1ue014orvto1" path="res://scenes/Main/Heightmap_-1_-1.res" id="8_kf5aa"]
+[ext_resource type="Image" uid="uid://c8khioydkixf7" path="res://scenes/Main/Water_0_0.res" id="8_xaipn"]
+[ext_resource type="Image" uid="uid://b7cqa00s6dyye" path="res://scenes/Main/Splatmap_-1_-1_0.res" id="9_t5ykj"]
+[ext_resource type="Image" uid="uid://d0l68wr3kal02" path="res://scenes/Main/Heightmap_-1_0.res" id="10_e755i"]
+[ext_resource type="Image" uid="uid://7v1j22ilf7c7" path="res://scenes/Main/Water_-1_-1.res" id="11_ndrjj"]
+[ext_resource type="Image" uid="uid://cob5ct0evvotb" path="res://scenes/Main/Splatmap_-1_0_0.res" id="11_ro3en"]
+[ext_resource type="Image" uid="uid://b376x0wl6n7fw" path="res://scenes/Main/Heightmap_0_-1.res" id="12_od4ux"]
+[ext_resource type="Image" uid="uid://ckm6htuhuv66r" path="res://scenes/Main/Splatmap_0_-1_0.res" id="13_xhfw6"]
+[ext_resource type="Image" uid="uid://cy4d6bfsa21pe" path="res://scenes/Main/Heightmap_-2_0.res" id="14_1epgm"]
+[ext_resource type="Image" uid="uid://cbenqj78rb34t" path="res://scenes/Main/Water_-1_0.res" id="14_ih3m7"]
+[ext_resource type="Image" uid="uid://mq4gd3mubnt3" path="res://scenes/Main/Splatmap_-2_0_0.res" id="15_152kg"]
+[ext_resource type="Image" uid="uid://bjwi1keaas4q0" path="res://scenes/Main/Heightmap_-2_1.res" id="16_r4e17"]
+[ext_resource type="Image" uid="uid://como2jpuelrtf" path="res://scenes/Main/Water_0_-1.res" id="17_11yus"]
+[ext_resource type="Image" uid="uid://crrvogxntwrtl" path="res://scenes/Main/Splatmap_-2_1_0.res" id="17_y57op"]
+[ext_resource type="Image" uid="uid://bno10p3qrhbw8" path="res://scenes/Main/Heightmap_-1_1.res" id="18_mlv25"]
+[ext_resource type="Image" uid="uid://bth83mdunw5j3" path="res://scenes/Main/Splatmap_-1_1_0.res" id="19_a82wo"]
+[ext_resource type="Image" uid="uid://30wybpusvde4" path="res://scenes/Main/Water_-2_0.res" id="20_b6ruc"]
+[ext_resource type="Image" uid="uid://c1x22qe6li57" path="res://scenes/Main/Heightmap_-1_2.res" id="20_gdvew"]
+[ext_resource type="Image" uid="uid://be3fysm4a4wv8" path="res://scenes/Main/Splatmap_-1_2_0.res" id="21_kjtvk"]
+[ext_resource type="Image" uid="uid://ylprhenh31bu" path="res://scenes/Main/Heightmap_0_2.res" id="22_xrs0c"]
+[ext_resource type="Image" uid="uid://beipnkomwh7j6" path="res://scenes/Main/Water_-2_1.res" id="23_155or"]
+[ext_resource type="Image" uid="uid://ddq34woaixuul" path="res://scenes/Main/Splatmap_0_2_0.res" id="23_xljpf"]
+[ext_resource type="Image" uid="uid://blouccwq1ai2" path="res://scenes/Main/Heightmap_1_2.res" id="24_j4bwh"]
+[ext_resource type="Image" uid="uid://bytlfmt5ctwud" path="res://scenes/Main/Splatmap_1_2_0.res" id="25_ksmap"]
+[ext_resource type="Image" uid="uid://b744xe3u4fl74" path="res://scenes/Main/Water_-1_1.res" id="26_vtx2l"]
+[ext_resource type="Image" uid="uid://cvwsq7t2ebnox" path="res://scenes/Main/Heightmap_1_1.res" id="26_ygd8o"]
+[ext_resource type="Image" uid="uid://5v6mjbxcvr3x" path="res://scenes/Main/Splatmap_1_1_0.res" id="27_2s0kr"]
+[ext_resource type="Image" uid="uid://fly13fnn0g33" path="res://scenes/Main/Heightmap_2_1.res" id="28_xaipn"]
+[ext_resource type="Image" uid="uid://3pihne0hdlvs" path="res://scenes/Main/Water_-1_2.res" id="29_63lxy"]
+[ext_resource type="Image" uid="uid://biwh5s6acu3j6" path="res://scenes/Main/Splatmap_2_1_0.res" id="29_ndrjj"]
+[ext_resource type="Image" uid="uid://64qkdkr26mh3" path="res://scenes/Main/Heightmap_0_1.res" id="30_ih3m7"]
+[ext_resource type="Image" uid="uid://ua2ijqwt2yyv" path="res://scenes/Main/Splatmap_0_1_0.res" id="31_11yus"]
+[ext_resource type="Image" uid="uid://bynmmg1ulpdkl" path="res://scenes/Main/Heightmap_1_0.res" id="32_b6ruc"]
+[ext_resource type="Image" uid="uid://cbqyj3m6ub260" path="res://scenes/Main/Water_0_2.res" id="32_fjhjs"]
+[ext_resource type="Image" uid="uid://d0jkvnpr0rxv" path="res://scenes/Main/Splatmap_1_0_0.res" id="33_155or"]
+[ext_resource type="Image" uid="uid://b5b336b2wd6wg" path="res://scenes/Main/Heightmap_1_-1.res" id="34_vtx2l"]
+[ext_resource type="Image" uid="uid://bqjpj28wiklcj" path="res://scenes/Main/Splatmap_1_-1_0.res" id="35_63lxy"]
+[ext_resource type="Image" uid="uid://c8r4clvhqaird" path="res://scenes/Main/Water_1_2.res" id="35_bfu41"]
+[ext_resource type="Image" uid="uid://bdwkxv776j51n" path="res://scenes/Main/Heightmap_2_2.res" id="36_fjhjs"]
+[ext_resource type="Image" uid="uid://ctx7uhxw40uhd" path="res://scenes/Main/Splatmap_2_2_0.res" id="37_bfu41"]
+[ext_resource type="Image" uid="uid://cvfenh1onovrn" path="res://scenes/Main/Heightmap_-2_2.res" id="38_r4ag1"]
+[ext_resource type="Image" uid="uid://dd75h11imm7sm" path="res://scenes/Main/Water_1_1.res" id="38_v0wtd"]
+[ext_resource type="Image" uid="uid://bnjmeroru6vah" path="res://scenes/Main/Splatmap_-2_2_0.res" id="39_v0wtd"]
+[ext_resource type="Image" uid="uid://dmptq4yk5omc7" path="res://scenes/Main/Heightmap_-2_3.res" id="40_sgvw8"]
+[ext_resource type="Image" uid="uid://cwm4gdk3cr31m" path="res://scenes/Main/Splatmap_-2_3_0.res" id="41_6nfnn"]
+[ext_resource type="Image" uid="uid://skbujmyby66f" path="res://scenes/Main/Water_2_1.res" id="41_sgvw8"]
+[ext_resource type="Image" uid="uid://bt4y5r71k86nd" path="res://scenes/Main/Heightmap_-1_3.res" id="42_4ue30"]
+[ext_resource type="Image" uid="uid://dmad8jmhs6tdt" path="res://scenes/Main/Splatmap_-1_3_0.res" id="43_k42av"]
+[ext_resource type="Image" uid="uid://bxln4gti4mgf8" path="res://scenes/Main/Water_0_1.res" id="44_6nfnn"]
+[ext_resource type="Image" uid="uid://m88buqmmn85" path="res://scenes/Main/Heightmap_-2_-1.res" id="44_gr8w0"]
+[ext_resource type="Image" uid="uid://kjov5wv3hljg" path="res://scenes/Main/Splatmap_-2_-1_0.res" id="45_673bd"]
+[ext_resource type="Image" uid="uid://dkaiwm4jygh77" path="res://scenes/Main/Heightmap_2_0.res" id="46_akjxb"]
+[ext_resource type="Image" uid="uid://d487q8kgiqm4" path="res://scenes/Main/Water_1_0.res" id="47_4ue30"]
+[ext_resource type="Image" uid="uid://b164pchdn6lg4" path="res://scenes/Main/Splatmap_2_0_0.res" id="47_vrx01"]
+[ext_resource type="Image" uid="uid://pjkjre4oo4w2" path="res://scenes/Main/Heightmap_2_-1.res" id="48_1uevf"]
+[ext_resource type="Image" uid="uid://dyttcmjb20hay" path="res://scenes/Main/Splatmap_2_-1_0.res" id="49_tc087"]
+[ext_resource type="Image" uid="uid://1l4sgm8tbc25" path="res://scenes/Main/Heightmap_0_3.res" id="50_73205"]
+[ext_resource type="Image" uid="uid://cgggybn1x6775" path="res://scenes/Main/Water_1_-1.res" id="50_k42av"]
+[ext_resource type="Image" uid="uid://c6td1p3625d6i" path="res://scenes/Main/Splatmap_0_3_0.res" id="51_0tljd"]
+[ext_resource type="Image" uid="uid://bpd3ncd0ef8uh" path="res://scenes/Main/Heightmap_1_3.res" id="52_mgpkq"]
+[ext_resource type="Image" uid="uid://dgkv7smkkgho0" path="res://scenes/Main/Water_2_2.res" id="53_gr8w0"]
+[ext_resource type="Image" uid="uid://dmh7nl2axnqjj" path="res://scenes/Main/Splatmap_1_3_0.res" id="53_xmrkg"]
+[ext_resource type="Image" uid="uid://cktxr2kh8o6dr" path="res://scenes/Main/Heightmap_2_3.res" id="54_wvlrk"]
+[ext_resource type="Image" uid="uid://cvp2upv08q8gp" path="res://scenes/Main/Splatmap_2_3_0.res" id="55_engxj"]
+[ext_resource type="Image" uid="uid://b2ryes3byalnn" path="res://scenes/Main/Water_-2_2.res" id="56_673bd"]
+[ext_resource type="Image" uid="uid://d4djv3f0054tj" path="res://scenes/Main/Water_-2_3.res" id="59_akjxb"]
+[ext_resource type="Image" uid="uid://dx65ifbmlvlui" path="res://scenes/Main/Water_-1_3.res" id="62_vrx01"]
+[ext_resource type="Image" uid="uid://1ea4d14jbu6n" path="res://scenes/Main/Water_-2_-1.res" id="65_1uevf"]
+[ext_resource type="Image" uid="uid://cfu0jyuybvwh0" path="res://scenes/Main/Water_2_0.res" id="68_tc087"]
+[ext_resource type="Image" uid="uid://cl2gjj1xkhcs4" path="res://scenes/Main/Water_2_-1.res" id="71_73205"]
+[ext_resource type="Image" uid="uid://c7dhj3t4ig0d4" path="res://scenes/Main/Water_0_3.res" id="74_0tljd"]
+[ext_resource type="Image" uid="uid://b56iiayeettug" path="res://scenes/Main/Water_1_3.res" id="77_mgpkq"]
+[ext_resource type="Image" uid="uid://bypfk4jckui8f" path="res://scenes/Main/Water_2_3.res" id="80_xmrkg"]
+[ext_resource type="Texture2D" uid="uid://b6qknafh0cpj0" path="res://textures/grass/Grass004_1K-PNG_NormalDX.png" id="84_b6ruc"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xaipn"]
+shader = ExtResource("1_ih3m7")
+shader_parameter/panorama_texture = ExtResource("2_11yus")
+shader_parameter/scroll_speed = 0.010000047974999982
+
+[sub_resource type="Sky" id="Sky_roort"]
+sky_material = SubResource("ShaderMaterial_xaipn")
+
+[sub_resource type="Environment" id="Environment_gm02q"]
+background_mode = 2
+sky = SubResource("Sky_roort")
+
+[sub_resource type="TextureSetResource" id="TextureSetResource_uyy6i"]
+albedoTexture = ExtResource("2_ids8r")
+normalTexture = ExtResource("4_1v6qk")
+roughnessTexture = ExtResource("5_augu2")
+heightTexture = ExtResource("3_dnhof")
+
+[sub_resource type="TextureSetsResource" id="TextureSetsResource_j2x0n"]
+textureSets = Array[TextureSetResource]([SubResource("TextureSetResource_uyy6i")])
+
+[sub_resource type="WaterResource" id="WaterResource_2f2p1"]
+waterColor = Color(0, 0.63529414, 1, 1)
+
+[sub_resource type="ZoneResource" id="ZoneResource_jyhfs"]
+heightMapImage = ExtResource("2_sugp2")
+splatmapsImage = Array[Image]([ExtResource("7_tm6hj")])
+waterImage = ExtResource("8_xaipn")
+
+[sub_resource type="ZoneResource" id="ZoneResource_07pt3"]
+zonePosition = Vector2i(-1, -1)
+heightMapImage = ExtResource("8_kf5aa")
+splatmapsImage = Array[Image]([ExtResource("9_t5ykj")])
+waterImage = ExtResource("11_ndrjj")
+
+[sub_resource type="ZoneResource" id="ZoneResource_37xlc"]
+zonePosition = Vector2i(-1, 0)
+heightMapImage = ExtResource("10_e755i")
+splatmapsImage = Array[Image]([ExtResource("11_ro3en")])
+waterImage = ExtResource("14_ih3m7")
+
+[sub_resource type="ZoneResource" id="ZoneResource_83607"]
+zonePosition = Vector2i(0, -1)
+heightMapImage = ExtResource("12_od4ux")
+splatmapsImage = Array[Image]([ExtResource("13_xhfw6")])
+waterImage = ExtResource("17_11yus")
+
+[sub_resource type="ZoneResource" id="ZoneResource_vny5k"]
+zonePosition = Vector2i(-2, 0)
+heightMapImage = ExtResource("14_1epgm")
+splatmapsImage = Array[Image]([ExtResource("15_152kg")])
+waterImage = ExtResource("20_b6ruc")
+
+[sub_resource type="ZoneResource" id="ZoneResource_8lcmr"]
+zonePosition = Vector2i(-2, 1)
+heightMapImage = ExtResource("16_r4e17")
+splatmapsImage = Array[Image]([ExtResource("17_y57op")])
+waterImage = ExtResource("23_155or")
+
+[sub_resource type="ZoneResource" id="ZoneResource_ga3rw"]
+zonePosition = Vector2i(-1, 1)
+heightMapImage = ExtResource("18_mlv25")
+splatmapsImage = Array[Image]([ExtResource("19_a82wo")])
+waterImage = ExtResource("26_vtx2l")
+
+[sub_resource type="ZoneResource" id="ZoneResource_f5chs"]
+zonePosition = Vector2i(-1, 2)
+heightMapImage = ExtResource("20_gdvew")
+splatmapsImage = Array[Image]([ExtResource("21_kjtvk")])
+waterImage = ExtResource("29_63lxy")
+
+[sub_resource type="ZoneResource" id="ZoneResource_eh25q"]
+zonePosition = Vector2i(0, 2)
+heightMapImage = ExtResource("22_xrs0c")
+splatmapsImage = Array[Image]([ExtResource("23_xljpf")])
+waterImage = ExtResource("32_fjhjs")
+
+[sub_resource type="ZoneResource" id="ZoneResource_joh2r"]
+zonePosition = Vector2i(1, 2)
+heightMapImage = ExtResource("24_j4bwh")
+splatmapsImage = Array[Image]([ExtResource("25_ksmap")])
+waterImage = ExtResource("35_bfu41")
+
+[sub_resource type="ZoneResource" id="ZoneResource_yton5"]
+zonePosition = Vector2i(1, 1)
+heightMapImage = ExtResource("26_ygd8o")
+splatmapsImage = Array[Image]([ExtResource("27_2s0kr")])
+waterImage = ExtResource("38_v0wtd")
+
+[sub_resource type="ZoneResource" id="ZoneResource_4ahvx"]
+zonePosition = Vector2i(2, 1)
+heightMapImage = ExtResource("28_xaipn")
+splatmapsImage = Array[Image]([ExtResource("29_ndrjj")])
+waterImage = ExtResource("41_sgvw8")
+
+[sub_resource type="ZoneResource" id="ZoneResource_2cr71"]
+zonePosition = Vector2i(0, 1)
+heightMapImage = ExtResource("30_ih3m7")
+splatmapsImage = Array[Image]([ExtResource("31_11yus")])
+waterImage = ExtResource("44_6nfnn")
+
+[sub_resource type="ZoneResource" id="ZoneResource_1hbcg"]
+zonePosition = Vector2i(1, 0)
+heightMapImage = ExtResource("32_b6ruc")
+splatmapsImage = Array[Image]([ExtResource("33_155or")])
+waterImage = ExtResource("47_4ue30")
+
+[sub_resource type="ZoneResource" id="ZoneResource_m4o51"]
+zonePosition = Vector2i(1, -1)
+heightMapImage = ExtResource("34_vtx2l")
+splatmapsImage = Array[Image]([ExtResource("35_63lxy")])
+waterImage = ExtResource("50_k42av")
+
+[sub_resource type="ZoneResource" id="ZoneResource_jp61a"]
+zonePosition = Vector2i(2, 2)
+heightMapImage = ExtResource("36_fjhjs")
+splatmapsImage = Array[Image]([ExtResource("37_bfu41")])
+waterImage = ExtResource("53_gr8w0")
+
+[sub_resource type="ZoneResource" id="ZoneResource_esrwe"]
+zonePosition = Vector2i(-2, 2)
+heightMapImage = ExtResource("38_r4ag1")
+splatmapsImage = Array[Image]([ExtResource("39_v0wtd")])
+waterImage = ExtResource("56_673bd")
+
+[sub_resource type="ZoneResource" id="ZoneResource_4b36k"]
+zonePosition = Vector2i(-2, 3)
+heightMapImage = ExtResource("40_sgvw8")
+splatmapsImage = Array[Image]([ExtResource("41_6nfnn")])
+waterImage = ExtResource("59_akjxb")
+
+[sub_resource type="ZoneResource" id="ZoneResource_1v8b0"]
+zonePosition = Vector2i(-1, 3)
+heightMapImage = ExtResource("42_4ue30")
+splatmapsImage = Array[Image]([ExtResource("43_k42av")])
+waterImage = ExtResource("62_vrx01")
+
+[sub_resource type="ZoneResource" id="ZoneResource_683hg"]
+zonePosition = Vector2i(-2, -1)
+heightMapImage = ExtResource("44_gr8w0")
+splatmapsImage = Array[Image]([ExtResource("45_673bd")])
+waterImage = ExtResource("65_1uevf")
+
+[sub_resource type="ZoneResource" id="ZoneResource_ow8of"]
+zonePosition = Vector2i(2, 0)
+heightMapImage = ExtResource("46_akjxb")
+splatmapsImage = Array[Image]([ExtResource("47_vrx01")])
+waterImage = ExtResource("68_tc087")
+
+[sub_resource type="ZoneResource" id="ZoneResource_hj4tt"]
+zonePosition = Vector2i(2, -1)
+heightMapImage = ExtResource("48_1uevf")
+splatmapsImage = Array[Image]([ExtResource("49_tc087")])
+waterImage = ExtResource("71_73205")
+
+[sub_resource type="ZoneResource" id="ZoneResource_kqx4a"]
+zonePosition = Vector2i(0, 3)
+heightMapImage = ExtResource("50_73205")
+splatmapsImage = Array[Image]([ExtResource("51_0tljd")])
+waterImage = ExtResource("74_0tljd")
+
+[sub_resource type="ZoneResource" id="ZoneResource_pfcs8"]
+zonePosition = Vector2i(1, 3)
+heightMapImage = ExtResource("52_mgpkq")
+splatmapsImage = Array[Image]([ExtResource("53_xmrkg")])
+waterImage = ExtResource("77_mgpkq")
+
+[sub_resource type="ZoneResource" id="ZoneResource_50d7c"]
+zonePosition = Vector2i(2, 3)
+heightMapImage = ExtResource("54_wvlrk")
+splatmapsImage = Array[Image]([ExtResource("55_engxj")])
+waterImage = ExtResource("80_xmrkg")
+
+[sub_resource type="ZonesResource" id="ZonesResource_tbgi4"]
+zones = Array[ZoneResource]([SubResource("ZoneResource_jyhfs"), SubResource("ZoneResource_07pt3"), SubResource("ZoneResource_37xlc"), SubResource("ZoneResource_83607"), SubResource("ZoneResource_vny5k"), SubResource("ZoneResource_8lcmr"), SubResource("ZoneResource_ga3rw"), SubResource("ZoneResource_f5chs"), SubResource("ZoneResource_eh25q"), SubResource("ZoneResource_joh2r"), SubResource("ZoneResource_yton5"), SubResource("ZoneResource_4ahvx"), SubResource("ZoneResource_2cr71"), SubResource("ZoneResource_1hbcg"), SubResource("ZoneResource_m4o51"), SubResource("ZoneResource_jp61a"), SubResource("ZoneResource_esrwe"), SubResource("ZoneResource_4b36k"), SubResource("ZoneResource_1v8b0"), SubResource("ZoneResource_683hg"), SubResource("ZoneResource_ow8of"), SubResource("ZoneResource_hj4tt"), SubResource("ZoneResource_kqx4a"), SubResource("ZoneResource_pfcs8"), SubResource("ZoneResource_50d7c")])
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uc3pe"]
+albedo_texture = ExtResource("2_ids8r")
+roughness_texture = ExtResource("5_augu2")
+normal_enabled = true
+normal_texture = ExtResource("84_b6ruc")
+heightmap_enabled = true
+heightmap_texture = ExtResource("3_dnhof")
+uv1_triplanar = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_tsrje"]
+material = SubResource("StandardMaterial3D_uc3pe")
+size = Vector3(2091.6963, 652.36774, 96.07715)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_155or"]
+size = Vector3(2091.6963, 116.45618, 96.07715)
+
+[node name="Main" type="Node3D" unique_id=1832420453]
+script = ExtResource("1_11yus")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=195439176]
+environment = SubResource("Environment_gm02q")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1032684964]
+transform = Transform3D(0.49999985, 0.7500001, -0.43301266, 2.780595e-08, 0.49999985, 0.8660254, 0.86602545, -0.43301266, 0.24999985, 117.824486, 83.25046, 0)
+
+[node name="Car" parent="." unique_id=1471651235 instance=ExtResource("1_0wfyh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 101.42573, 43, 0)
+
+[node name="TerraBrush" type="TerraBrush" parent="." unique_id=1287331619]
+dataPath = "res://scenes/Main"
+textureSets = SubResource("TextureSetsResource_j2x0n")
+waterDefinition = SubResource("WaterResource_2f2p1")
+terrainZones = SubResource("ZonesResource_tbgi4")
+physics_interpolation_mode = 2
+metadata/_edit_lock_ = false
+
+[node name="Barriers" type="Node" parent="." unique_id=675444971]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Barriers" unique_id=521171519]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 57.72809, -417.34235)
+mesh = SubResource("BoxMesh_tsrje")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Barriers/MeshInstance3D" unique_id=1633534428]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Barriers/MeshInstance3D/StaticBody3D" unique_id=646252331]
+shape = SubResource("BoxShape3D_155or")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Barriers" unique_id=1775628450]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -641.67676, 57.72809, 415.30206)
+mesh = SubResource("BoxMesh_tsrje")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Barriers/MeshInstance3D2" unique_id=186895986]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Barriers/MeshInstance3D2/StaticBody3D" unique_id=810643475]
+shape = SubResource("BoxShape3D_155or")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Barriers" unique_id=145271681]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -75.32568, 57.72809, 873.88776)
+mesh = SubResource("BoxMesh_tsrje")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Barriers/MeshInstance3D3" unique_id=329483105]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Barriers/MeshInstance3D3/StaticBody3D" unique_id=1255565754]
+shape = SubResource("BoxShape3D_155or")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Barriers" unique_id=1237340349]
+transform = Transform3D(1.3113416e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113416e-07, 621.95557, 325.68387, 399.6192)
+mesh = SubResource("BoxMesh_tsrje")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Barriers/MeshInstance3D4" unique_id=566159262]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Barriers/MeshInstance3D4/StaticBody3D" unique_id=1116451238]
+shape = SubResource("BoxShape3D_155or")

@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://d3w2a1sn4d8m"]
 
 [ext_resource type="Shader" uid="uid://kl1e0bihuwt0" path="res://Shaders/sky/Scrolling_Sky.gdshader" id="1_j5jx5"]
-[ext_resource type="Texture2D" uid="uid://dotbik1q6s2s6" path="res://Textures/Prototype/prototype_green.png" id="2_j5jx5"]
+[ext_resource type="Texture2D" uid="uid://dotbik1q6s2s6" path="res://textures/Prototype/prototype_green.png" id="2_j5jx5"]
 [ext_resource type="Texture2D" uid="uid://bpydg3nglrlar" path="res://Shaders/sky/skybox-day.png" id="2_lpvoh"]
-[ext_resource type="Texture2D" uid="uid://ou0niudnqdrt" path="res://Textures/Prototype/Prototype_Yellow.png" id="3_lpvoh"]
+[ext_resource type="Texture2D" uid="uid://ou0niudnqdrt" path="res://textures/Prototype/Prototype_Yellow.png" id="3_lpvoh"]
 [ext_resource type="PackedScene" uid="uid://b0mmyo1pdpej8" path="res://cars/player_car/custom_car/scenes/custom_car.tscn" id="5_j5jx5"]
 [ext_resource type="Script" uid="uid://cabppm3cppapl" path="res://cars/player_car/raycast_car/scripts/camera.gd" id="6_lpvoh"]
 [ext_resource type="LightmapGIData" uid="uid://br8svrhjexp3p" path="res://scenes/test.lmbake" id="7_at5dv"]
@@ -22,8 +22,6 @@ sky_material = SubResource("ShaderMaterial_i3aeo")
 [sub_resource type="Environment" id="Environment_ys1qc"]
 background_mode = 2
 sky = SubResource("Sky_35xla")
-glow_enabled = true
-glow_intensity = 8.0
 fog_enabled = true
 fog_mode = 1
 fog_density = 0.8
@@ -70,6 +68,7 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 0.99999994, 0, -1, 0, -4.371139e
 
 [node name="Sun" type="DirectionalLight3D" parent="." unique_id=639982040]
 transform = Transform3D(-0.77025723, 0.3958584, 0.49999997, 0.44470817, -0.22854891, 0.86602545, 0.4570979, 0.8894164, -1.3253338e-08, 711.8009, 315.70435, 0)
+light_energy = 0.0
 shadow_enabled = true
 
 [node name="Environment" type="WorldEnvironment" parent="." unique_id=2109003749]
@@ -80,11 +79,10 @@ transform = Transform3D(1.0000001, 0, 0, 0, 1.0000002, 0, 0, 0, 1.0000001, 22.56
 
 [node name="Node3D" type="Node3D" parent="CustomCar" unique_id=1708496425]
 
-[node name="FollowCamera" type="Camera3D" parent="CustomCar/Node3D" unique_id=1005351195 node_paths=PackedStringArray("target", "pivot")]
+[node name="FollowCamera" type="Camera3D" parent="CustomCar/Node3D" unique_id=1005351195 node_paths=PackedStringArray("target")]
 transform = Transform3D(0.9983917, 0.02279151, -0.051909737, 0, 0.9156319, 0.4020177, 0.0566928, -0.40137115, 0.9141593, 0.21701336, 1.4696913, 5.024932)
 script = ExtResource("6_lpvoh")
 target = NodePath("../..")
-pivot = NodePath("..")
 metadata/_custom_type_script = "uid://cabppm3cppapl"
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=345175673]

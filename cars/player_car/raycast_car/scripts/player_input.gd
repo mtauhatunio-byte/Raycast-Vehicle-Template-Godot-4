@@ -1,6 +1,6 @@
 class_name PlayerInput extends Node
 
-@onready var car = get_owner() as RayCastCar
+@onready var car : RayCastCar = get_owner()
 
 func _unhandled_input(event: InputEvent) -> void:
 	car.target_throttle = Input.get_action_strength("accelerate") - Input.get_action_strength("decelerate")

@@ -30,9 +30,10 @@ class_name RayCastWheel extends RayCast3D
 @export var ray_length : float = 1.0
 @export var arrow_size : float = 0.05
 
-@onready var mesh = get_child(0) as MeshInstance3D
-@onready var shapecast = get_child(2) as ShapeCast3D
-@onready var car = get_owner() as RayCastCar
+@onready var mesh : MeshInstance3D = get_child(0)
+@onready var shapecast : ShapeCast3D = get_child(1)
+@onready var drift : CPUParticles3D = get_child(2)
+@onready var car : RayCastCar = get_owner()
 
 var engine_force : float = 0.0
 var grip_factor : float = 0.0
@@ -103,6 +104,11 @@ func simulate_wheels(dt : float) -> void:
 			x_traction = 0.01
 		elif car.slipping:
 			x_traction = 0.1
+	
+	if (car.slipping or car.handbreak) and car.grounded:
+		drift.emitting = true
+	else:
+		drift.emitting = false
 	
 	var gravity : float = -car.get_gravity().y
 	var x_force : Vector3 = (

@@ -2,7 +2,7 @@ class_name RayCastCar extends RigidBody3D
 
 @export var wheels : Array[RayCastWheel] = []
 
-@export var acceleration : float = 600.0
+@export var acceleration : float = 50.0
 @export var max_speed : float = 20.0
 @export var acceleration_curve : Curve = null
 
@@ -28,6 +28,9 @@ var handbreak : bool = false
 var slipping : bool = false
 var braking : bool = false
 var forward_speed : float = 0.0
+
+func _ready() -> void:
+	$SoundContainer/Engine.play()
 
 func _physics_process(delta: float) -> void:
 	forward_speed = -global_basis.z.dot(linear_velocity)
